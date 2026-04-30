@@ -1,0 +1,150 @@
+---
+name: dev-team
+description: 通用开发团队 - 多角色协作系统
+roles:
+  - pm
+  - designer  
+  - frontend
+  - backend
+  - qa
+  - devops
+  - ops
+---
+
+# 开发团队定义
+
+## 团队架构
+
+```
+项目经理 (PM)
+    ├─ 产品设计师 (Designer)
+    ├─ 前端开发 (Frontend)
+    ├─ 后端开发 (Backend)
+    ├─ 测试工程师 (QA)
+    ├─ 运维工程师 (DevOps)
+    └─ 运营专员 (Ops)
+```
+
+## 工作模式
+
+### 1. 项目制
+- 每个项目有独立的文件空间
+- 项目内所有角色共享项目上下文
+- 项目隔离，互不干扰
+
+### 2. 角色会话
+- 每个角色是一个独立的会话
+- 可通过 UI 切换不同角色会话
+- 角色有自己的记忆和上下文
+
+### 3. 协作机制
+- 通过 PROJECT.md 共享项目状态
+- 通过角色记忆文件同步上下文
+- 通过消息传递进行协作
+
+## 项目空间结构
+
+```
+projects/<project-name>/
+├── README.md              # 项目说明
+├── PROJECT.md             # 项目主记忆（所有角色共享）
+├── STATUS.md              # 当前状态和进度
+├── docs/                  # 项目文档
+│   ├── prd/               # 产品需求文档
+│   ├── design/            # 设计文档
+│   ├── api/               # 接口文档
+│   └── qa/                # 测试文档
+├── src/                   # 源代码
+│   ├── frontend/          # 前端代码
+│   ├── backend/           # 后端代码
+│   └── shared/            # 共享资源
+├── memory/                # 角色记忆
+│   ├── pm.md              # 产品经理记忆
+│   ├── designer.md        # 设计师记忆
+│   ├── frontend.md        # 前端记忆
+│   ├── backend.md         # 后端记忆
+│   ├── qa.md              # 测试记忆
+│   ├── devops.md          # 运维记忆
+│   └── ops.md             # 运营记忆
+├── sessions/              # 会话记录
+└── archive/               # 归档文件
+```
+
+## 启动新项目流程
+
+1. 创建项目空间
+2. 初始化项目记忆
+3. 启动项目经理会话
+4. PM 召集各角色开会
+5. 各角色进入自己的工作流
+
+## 协作协议
+
+### 消息格式
+```
+[发件人] -> [收件人]
+[类型]: 需求/反馈/通知/求助
+[内容]: ...
+[优先级]: P0/P1/P2/P3
+```
+
+### 状态同步
+- 每个角色完成阶段任务后更新 STATUS.md
+- 发现阻塞问题立即在 PROJECT.md 标记
+- 重要决策需记录到 PROJECT.md
+
+### 记忆管理
+- 每个角色有自己的 memory/<role>.md
+- 记录：工作内容、决策、问题、学习
+- 定期同步到 PROJECT.md 确保团队可见
+
+## 使用方式
+
+### 创建新项目
+```bash
+python3 scripts/team-manager.py create "项目名" "项目类型"
+```
+
+### 与特定角色对话
+```
+@pm 分析这个需求
+@designer 设计登录页面
+@frontend 实现购物车功能
+@backend 设计订单表结构
+```
+
+### 查看项目状态
+```
+@team status
+```
+
+### 团队会议
+```
+@team meeting
+```
+
+## 技术栈支持
+
+- 小程序：微信小程序、Taro、uni-app
+- Web：React、Vue、Next.js、Nuxt
+- 后端：Node.js、Python、Go、Java
+- 移动端：React Native、Flutter
+- 桌面端：Electron、Tauri
+- AI应用：LangChain、LlamaIndex
+- 区块链：Solidity、Web3.js
+
+## 扩展性
+
+可添加新角色：
+- AI工程师（模型训练、Prompt工程）
+- 数据工程师（数据分析、ETL）
+- 安全工程师（渗透测试、安全审计）
+- 算法工程师（推荐算法、搜索算法）
+
+可添加新项目模板：
+- SaaS平台
+- 电商系统
+- 社交应用
+- 数据大屏
+- AI应用
+- 区块链应用
