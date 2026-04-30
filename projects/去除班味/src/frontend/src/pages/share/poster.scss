@@ -1,0 +1,104 @@
+@import '../../styles/variables.scss';
+
+.poster-page {
+  min-height: 100vh;
+  background: $color-surface;
+
+  &__scroll {
+    height: 100vh;
+  }
+
+  &__preview {
+    padding: $space-6;
+    @include flex-center;
+    background: $color-surface;
+  }
+
+  &__canvas {
+    @include shadow-lg;
+    border-radius: $radius-lg;
+  }
+
+  &__templates {
+    padding: 0 $space-4;
+    margin-bottom: $space-6;
+  }
+
+  &__section-title {
+    font-size: $text-subheading;
+    font-weight: 600;
+    color: $color-text-primary;
+    margin-bottom: $space-4;
+    display: block;
+  }
+
+  &__template-info {
+    padding: 0 $space-4;
+    margin-bottom: $space-6;
+
+    .template-info__text {
+      font-size: $text-small;
+      color: $color-text-secondary;
+      line-height: $leading-normal;
+      text-align: center;
+    }
+  }
+
+  &__actions {
+    padding: 0 $space-4;
+    display: flex;
+    flex-direction: column;
+    gap: $space-3;
+    margin-bottom: $space-6;
+  }
+
+  &__bottom {
+    height: 160rpx;
+  }
+}
+
+.template-list {
+  display: flex;
+  gap: $space-4;
+  overflow-x: auto;
+  padding-bottom: $space-2;
+}
+
+.template-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $space-2;
+  min-width: 160rpx;
+  transition: all $duration-fast;
+
+  &--active {
+    .template-item__preview {
+      border-width: 4rpx;
+      transform: scale(1.05);
+    }
+
+    .template-item__name {
+      color: $color-brand;
+      font-weight: 600;
+    }
+  }
+
+  &__preview {
+    width: 140rpx;
+    height: 140rpx;
+    border-radius: $radius-lg;
+    border: 2rpx solid $color-border;
+    @include flex-center;
+    transition: all $duration-fast $ease-out-quart;
+  }
+
+  &__icon {
+    font-size: 56rpx;
+  }
+
+  &__name {
+    font-size: $text-small;
+    color: $color-text-secondary;
+  }
+}

@@ -1,0 +1,278 @@
+@import '../../styles/variables.scss';
+
+.plan-detail-page {
+  min-height: 100vh;
+  background: $color-surface;
+
+  &__scroll {
+    height: 100vh;
+  }
+
+  &__header {
+    padding: $space-6 $space-4;
+    margin-bottom: $space-4;
+  }
+
+  &__header-top {
+    @include flex-between;
+    margin-bottom: $space-3;
+  }
+
+  &__name {
+    font-size: $text-display;
+    color: $color-text-primary;
+    display: block;
+    margin-bottom: $space-2;
+  }
+
+  &__desc {
+    font-size: $text-body;
+    color: $color-text-secondary;
+    line-height: $leading-normal;
+    margin-bottom: $space-4;
+  }
+
+  &__meta {
+    display: flex;
+    gap: $space-4;
+    margin-bottom: $space-4;
+  }
+
+  &__difficulty {
+    display: flex;
+    align-items: center;
+    gap: $space-1;
+
+    .difficulty-label {
+      font-size: $text-caption;
+      color: $color-text-tertiary;
+      margin-right: $space-1;
+    }
+  }
+
+  &__overall-progress {
+    margin-bottom: $space-4;
+
+    .progress-info {
+      @include flex-between;
+      margin-bottom: $space-2;
+    }
+
+    .progress-label {
+      font-size: $text-small;
+      color: $color-text-secondary;
+    }
+
+    .progress-value {
+      font-size: $text-small;
+      font-weight: 600;
+      color: $color-text-primary;
+    }
+  }
+
+  &__calendar {
+    padding: 0 $space-4;
+    margin-bottom: $space-6;
+
+    .section-title {
+      font-size: $text-subheading;
+      font-weight: 600;
+      color: $color-text-primary;
+      margin-bottom: $space-4;
+      display: block;
+    }
+  }
+
+  &__actions {
+    padding: 0 $space-4;
+    margin-bottom: $space-6;
+
+    .section-title {
+      font-size: $text-subheading;
+      font-weight: 600;
+      color: $color-text-primary;
+      margin-bottom: $space-4;
+      display: block;
+    }
+  }
+
+  &__retest {
+    padding: 0 $space-4;
+    margin-bottom: $space-6;
+  }
+
+  &__bottom {
+    height: 160rpx;
+  }
+}
+
+// 打卡日历
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: $space-2;
+}
+
+.calendar-day {
+  @include flex-center;
+  flex-direction: column;
+  padding: $space-3 $space-2;
+  background: $color-surface-raised;
+  border-radius: $radius-md;
+  gap: $space-1;
+
+  &--done {
+    background: $color-success + '18';
+  }
+
+  &--future {
+    opacity: 0.5;
+  }
+
+  &__date {
+    font-size: $text-caption;
+    color: $color-text-tertiary;
+  }
+
+  &__icon {
+    font-size: 32rpx;
+  }
+
+  &__label {
+    font-size: 20rpx;
+    color: $color-text-tertiary;
+  }
+}
+
+// 行动项卡片
+.action-card {
+  margin-bottom: $space-4;
+  transition: all $duration-fast;
+
+  &--completed {
+    opacity: 0.7;
+
+    .action-card__title {
+      text-decoration: line-through;
+      color: $color-text-tertiary;
+    }
+  }
+
+  &__header {
+    @include flex-between;
+    margin-bottom: $space-3;
+  }
+
+  &__day-badge {
+    padding: $space-1 $space-3;
+    border-radius: $radius-sm;
+
+    Text {
+      font-size: $text-caption;
+      font-weight: 600;
+    }
+  }
+
+  &__check {
+    width: 48rpx;
+    height: 48rpx;
+    @include flex-center;
+    border-radius: $radius-md;
+    background: $color-surface;
+    border: 2rpx solid $color-border;
+    transition: all $duration-fast;
+
+    &--done {
+      background: $color-success + '20';
+      border-color: $color-success;
+    }
+
+    Text {
+      font-size: 32rpx;
+    }
+  }
+
+  &__title {
+    font-size: $text-subheading;
+    font-weight: 600;
+    color: $color-text-primary;
+    margin-bottom: $space-2;
+  }
+
+  &__desc {
+    font-size: $text-small;
+    color: $color-text-secondary;
+    line-height: $leading-normal;
+    margin-bottom: $space-3;
+  }
+
+  &__tip {
+    padding: $space-3;
+    background: $color-brand-muted;
+    border-radius: $radius-md;
+
+    .tip-text {
+      font-size: $text-small;
+      color: $color-brand;
+      line-height: $leading-normal;
+    }
+  }
+}
+
+// 复测卡片
+.retest-card {
+  text-align: center;
+
+  &__title {
+    font-size: $text-heading;
+    font-weight: 600;
+    color: $color-text-primary;
+    display: block;
+    margin-bottom: $space-3;
+  }
+
+  &__desc {
+    font-size: $text-body;
+    color: $color-text-secondary;
+    line-height: $leading-normal;
+    margin-bottom: $space-4;
+    display: block;
+  }
+}
+
+.difficulty-dot {
+  font-size: 20rpx;
+  color: $color-border;
+
+  &--active {
+    color: $color-warning;
+  }
+}
+
+.progress-track {
+  height: 16rpx;
+  background: $color-border-subtle;
+  border-radius: $radius-full;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: $radius-full;
+  transition: width $duration-slow $ease-out-expo;
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: $space-1;
+
+  &__icon {
+    font-size: 28rpx;
+  }
+
+  &__text {
+    font-size: $text-caption;
+    color: $color-text-tertiary;
+  }
+}

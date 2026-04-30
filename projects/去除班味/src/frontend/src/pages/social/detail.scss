@@ -1,0 +1,201 @@
+@import '../../styles/variables.scss';
+
+.post-detail-page {
+  min-height: 100vh;
+  background: $color-surface;
+
+  &__scroll {
+    height: calc(100vh - 120rpx);
+  }
+
+  &__content {
+    margin: $space-4;
+  }
+
+  &__header {
+    @include flex-between;
+    margin-bottom: $space-4;
+  }
+
+  &__user {
+    display: flex;
+    align-items: center;
+    gap: $space-3;
+  }
+
+  &__avatar {
+    width: 80rpx;
+    height: 80rpx;
+    border-radius: $radius-full;
+    background: $color-brand-muted;
+    @include flex-center;
+    font-size: 40rpx;
+  }
+
+  &__meta {
+    display: flex;
+    flex-direction: column;
+    gap: $space-1;
+  }
+
+  &__name {
+    font-size: $text-body;
+    font-weight: 600;
+    color: $color-text-primary;
+  }
+
+  &__time {
+    font-size: $text-caption;
+    color: $color-text-tertiary;
+  }
+
+  &__detect-card {
+    border-radius: $radius-md;
+    padding: $space-4;
+    margin-bottom: $space-4;
+  }
+
+  &__text {
+    font-size: $text-body;
+    color: $color-text-primary;
+    line-height: $leading-normal;
+    margin-bottom: $space-3;
+  }
+
+  &__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-2;
+    margin-bottom: $space-3;
+  }
+
+  &__tag {
+    padding: $space-1 $space-3;
+    background: $color-surface;
+    border-radius: $radius-full;
+    border: 2rpx solid $color-border-subtle;
+
+    Text {
+      font-size: $text-caption;
+      color: $color-brand;
+    }
+  }
+
+  &__stats {
+    display: flex;
+    gap: $space-6;
+    padding-top: $space-3;
+    border-top: 2rpx solid $color-border-subtle;
+
+    .stats-item {
+      font-size: $text-small;
+      color: $color-text-secondary;
+    }
+  }
+
+  &__comments-section {
+    padding: 0 $space-4;
+    margin-top: $space-4;
+
+    .comments-section__title {
+      font-size: $text-subheading;
+      font-weight: 600;
+      color: $color-text-primary;
+      margin-bottom: $space-4;
+      display: block;
+    }
+  }
+
+  &__bottom {
+    height: 160rpx;
+  }
+
+  &__action-bar {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 120rpx;
+    background: $color-surface-raised;
+    border-top: 2rpx solid $color-border-subtle;
+    display: flex;
+    @include safe-area-bottom;
+
+    .action-bar__btn {
+      flex: 1;
+      @include flex-center;
+      flex-direction: column;
+      gap: $space-1;
+      transition: all $duration-fast;
+
+      Text:first-child {
+        font-size: 40rpx;
+      }
+
+      &--active {
+        Text:first-child {
+          transform: scale(1.15);
+        }
+      }
+
+      &-text {
+        font-size: $text-caption;
+        color: $color-text-secondary;
+      }
+    }
+  }
+}
+
+// 评论卡片
+.comment-card {
+  margin-bottom: $space-3;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: $space-2;
+    margin-bottom: $space-2;
+  }
+
+  &__avatar {
+    width: 56rpx;
+    height: 56rpx;
+    border-radius: $radius-full;
+    background: $color-brand-muted;
+    @include flex-center;
+    font-size: 28rpx;
+  }
+
+  &__meta {
+    display: flex;
+    flex-direction: column;
+  }
+
+  &__name {
+    font-size: $text-small;
+    font-weight: 600;
+    color: $color-text-primary;
+  }
+
+  &__time {
+    font-size: $text-caption;
+    color: $color-text-tertiary;
+  }
+
+  &__content {
+    font-size: $text-body;
+    color: $color-text-primary;
+    line-height: $leading-normal;
+    margin-bottom: $space-2;
+  }
+
+  &__footer {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  &__likes {
+    font-size: $text-caption;
+    color: $color-text-tertiary;
+  }
+}

@@ -1,0 +1,175 @@
+@import '../../styles/variables.scss';
+
+.publish-page {
+  min-height: 100vh;
+  background: $color-surface;
+  padding: $space-4;
+
+  &__type-row {
+    display: flex;
+    gap: $space-3;
+    margin-bottom: $space-4;
+    flex-wrap: wrap;
+  }
+
+  &__input-area {
+    margin-bottom: $space-4;
+  }
+
+  &__textarea {
+    width: 100%;
+    min-height: 240rpx;
+    padding: $space-4;
+    border-radius: $radius-lg;
+    background: $color-surface-raised;
+    border: 2rpx solid $color-border-subtle;
+    font-size: $text-body;
+    color: $color-text-primary;
+    line-height: $leading-normal;
+  }
+
+  &__char-count {
+    text-align: right;
+    font-size: $text-caption;
+    color: $color-text-tertiary;
+    margin-top: $space-2;
+    display: block;
+  }
+
+  &__images {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-3;
+    margin-bottom: $space-4;
+  }
+
+  &__tags-section {
+    margin-bottom: $space-4;
+  }
+
+  &__section-title {
+    font-size: $text-subheading;
+    font-weight: 600;
+    color: $color-text-primary;
+    margin-bottom: $space-3;
+    display: block;
+  }
+
+  &__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-2;
+  }
+
+  &__anonymous {
+    display: flex;
+    align-items: center;
+    gap: $space-3;
+    padding: $space-4;
+    background: $color-surface-raised;
+    border-radius: $radius-lg;
+    margin-bottom: $space-6;
+  }
+
+  &__actions {
+    padding-bottom: calc($space-6 + env(safe-area-inset-bottom));
+  }
+}
+
+.type-chip {
+  padding: $space-2 $space-4;
+  border-radius: $radius-full;
+  background: $color-surface-raised;
+  border: 2rpx solid $color-border-subtle;
+  transition: all $duration-fast;
+
+  &--active {
+    background: $color-brand;
+    border-color: $color-brand;
+    color: $color-text-inverse;
+    font-weight: 600;
+  }
+}
+
+.image-item {
+  position: relative;
+  width: 200rpx;
+  height: 200rpx;
+
+  &__img {
+    width: 100%;
+    height: 100%;
+    border-radius: $radius-md;
+    object-fit: cover;
+  }
+
+  &__remove {
+    position: absolute;
+    top: -8rpx;
+    right: -8rpx;
+    width: 44rpx;
+    height: 44rpx;
+    border-radius: $radius-full;
+    background: $color-error;
+    @include flex-center;
+    color: $color-text-inverse;
+    font-size: 24rpx;
+  }
+}
+
+.image-add {
+  width: 200rpx;
+  height: 200rpx;
+  border-radius: $radius-md;
+  border: 2rpx dashed $color-border;
+  @include flex-center;
+  flex-direction: column;
+  gap: $space-2;
+  background: $color-surface-raised;
+
+  &__icon {
+    font-size: 48rpx;
+  }
+
+  &__text {
+    font-size: $text-caption;
+    color: $color-text-tertiary;
+  }
+}
+
+.topic-tag {
+  padding: $space-2 $space-3;
+  border-radius: $radius-full;
+  background: $color-surface-raised;
+  border: 2rpx solid $color-border-subtle;
+  font-size: $text-small;
+  color: $color-text-secondary;
+  transition: all $duration-fast;
+
+  &--active {
+    background: $color-brand-muted;
+    border-color: $color-brand;
+    color: $color-brand;
+    font-weight: 600;
+  }
+}
+
+.anonymous-checkbox {
+  width: 44rpx;
+  height: 44rpx;
+  border-radius: $radius-md;
+  border: 2rpx solid $color-border;
+  @include flex-center;
+  transition: all $duration-fast;
+
+  &--checked {
+    background: $color-brand;
+    border-color: $color-brand;
+    color: $color-text-inverse;
+  }
+}
+
+.anonymous-label {
+  font-size: $text-body;
+  color: $color-text-primary;
+}

@@ -1,0 +1,234 @@
+@import '../../styles/variables.scss';
+
+.plans-page {
+  min-height: 100vh;
+  background: $color-surface;
+
+  &__header {
+    padding: $space-6 $space-4 $space-4;
+    background: linear-gradient(180deg, $color-brand-muted 0%, $color-surface 100%);
+  }
+
+  &__title {
+    font-size: $text-display;
+    color: $color-text-primary;
+    font-family: $font-display;
+    display: block;
+    margin-bottom: $space-1;
+  }
+
+  &__subtitle {
+    font-size: $text-small;
+    color: $color-text-secondary;
+  }
+
+  &__categories {
+    padding: 0 $space-4;
+    margin-bottom: $space-4;
+    white-space: nowrap;
+  }
+
+  &__scroll {
+    height: calc(100vh - 360rpx);
+  }
+
+  &__list {
+    padding: 0 $space-4;
+    display: flex;
+    flex-direction: column;
+    gap: $space-4;
+  }
+
+  &__bottom {
+    height: 160rpx;
+  }
+}
+
+// 分类标签
+.category-chip {
+  display: inline-flex;
+  padding: $space-2 $space-4;
+  border-radius: $radius-full;
+  background: $color-surface-raised;
+  border: 2rpx solid $color-border-subtle;
+  margin-right: $space-3;
+  transition: all $duration-fast $ease-out-quart;
+
+  &--active {
+    .category-chip__text {
+      color: $color-text-inverse;
+      font-weight: 600;
+    }
+  }
+
+  &__text {
+    font-size: $text-small;
+    color: $color-text-secondary;
+  }
+}
+
+// 方案卡片
+.plan-card {
+  overflow: hidden;
+
+  &__header {
+    padding: $space-3 $space-4;
+    @include flex-between;
+    margin: -$space-4 -$space-4 $space-3;
+    border-radius: $radius-lg $radius-lg 0 0;
+  }
+
+  &__difficulty {
+    display: flex;
+    align-items: center;
+    gap: $space-1;
+
+    .difficulty-label {
+      font-size: $text-caption;
+      color: $color-text-tertiary;
+      margin-right: $space-1;
+    }
+  }
+
+  &__body {
+    display: flex;
+    flex-direction: column;
+    gap: $space-3;
+  }
+
+  &__name {
+    font-size: $text-subheading;
+    font-weight: 600;
+    color: $color-text-primary;
+  }
+
+  &__desc {
+    font-size: $text-small;
+    color: $color-text-secondary;
+    line-height: $leading-normal;
+  }
+
+  &__meta {
+    display: flex;
+    gap: $space-4;
+  }
+
+  &__match {
+    display: flex;
+    align-items: center;
+    gap: $space-2;
+    padding: $space-2 $space-3;
+    background: $color-brand-muted;
+    border-radius: $radius-md;
+
+    .match-icon {
+      font-size: 28rpx;
+    }
+
+    .match-text {
+      font-size: $text-small;
+      color: $color-brand;
+    }
+  }
+
+  &__progress {
+    margin-top: $space-2;
+
+    .progress-row {
+      @include flex-between;
+      margin-bottom: $space-2;
+    }
+
+    .progress-label {
+      font-size: $text-small;
+      color: $color-text-secondary;
+    }
+
+    .progress-value {
+      font-size: $text-small;
+      font-weight: 600;
+      color: $color-text-primary;
+    }
+  }
+
+  &__action {
+    display: flex;
+    gap: $space-3;
+    margin-top: $space-2;
+    padding-top: $space-3;
+    border-top: 2rpx solid $color-border-subtle;
+
+    &--joined {
+      justify-content: space-between;
+    }
+  }
+
+  &__btn {
+    font-size: $text-body;
+    font-weight: 600;
+
+    &--join {
+      color: $color-brand;
+    }
+
+    &--checkin {
+      color: $color-success;
+    }
+
+    &--detail {
+      color: $color-text-tertiary;
+    }
+  }
+}
+
+.meta-item {
+  display: flex;
+  align-items: center;
+  gap: $space-1;
+
+  &__icon {
+    font-size: 28rpx;
+  }
+
+  &__text {
+    font-size: $text-caption;
+    color: $color-text-tertiary;
+  }
+}
+
+.difficulty-dot {
+  font-size: 20rpx;
+  color: $color-border;
+
+  &--active {
+    color: $color-warning;
+  }
+}
+
+.progress-track {
+  height: 16rpx;
+  background: $color-border-subtle;
+  border-radius: $radius-full;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: $radius-full;
+  transition: width $duration-slow $ease-out-expo;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up {
+  animation: slideUp $duration-slow $ease-out-expo both;
+}

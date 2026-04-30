@@ -4,10 +4,18 @@ export default defineAppConfig({
     'pages/detect/index',
     'pages/detect/confirm',
     'pages/detect/analyzing',
-    'pages/report/index',
-    'pages/plan/index',
-    'pages/circle/index',
-    'pages/share/index'
+    'pages/detect/report',
+    'pages/detect/history',
+    'pages/plans/index',
+    'pages/plans/detail',
+    'pages/social/index',
+    'pages/social/publish',
+    'pages/social/detail',
+    'pages/profile/index',
+    'pages/profile/settings',
+    'pages/profile/my-plans',
+    'pages/profile/my-posts',
+    'pages/share/poster',
   ],
   window: {
     backgroundTextStyle: 'light',
@@ -17,7 +25,7 @@ export default defineAppConfig({
   },
   tabBar: {
     color: '#999',
-    selectedColor: '#FF6B6B',
+    selectedColor: '#E67E22',
     backgroundColor: '#fff',
     borderStyle: 'black',
     list: [
@@ -28,10 +36,22 @@ export default defineAppConfig({
         selectedIconPath: 'assets/icons/tab-detect-active.png'
       },
       {
-        pagePath: 'pages/circle/index',
+        pagePath: 'pages/plans/index',
+        text: '方案',
+        iconPath: 'assets/icons/tab-plan.png',
+        selectedIconPath: 'assets/icons/tab-plan-active.png'
+      },
+      {
+        pagePath: 'pages/social/index',
         text: '圈子',
         iconPath: 'assets/icons/tab-circle.png',
         selectedIconPath: 'assets/icons/tab-circle-active.png'
+      },
+      {
+        pagePath: 'pages/profile/index',
+        text: '我的',
+        iconPath: 'assets/icons/tab-me.png',
+        selectedIconPath: 'assets/icons/tab-me-active.png'
       }
     ]
   }

@@ -1,48 +1,57 @@
-# 前端开发工程师记忆 - 去除班味
+# 去除班味 — 前端开发记录
 
-> 📝 这是你的个人记忆空间，记录你的工作、决策、问题和学习。
-> 其他角色不会直接读取此文件，除非你主动分享。
+## 技术栈
+- Taro 3.x + React 18 + TypeScript
+- 状态管理: Recoil
+- 样式: SCSS + OKLCH色彩系统
+- 字体: 站酷快乐体(标题) + 霞鹜文楷(正文)
 
-## 项目信息
-- **角色**: 前端开发工程师
-- **项目**: 去除班味
-- **加入时间**: 2026-04-30
-- **当前阶段**: 🟢 开发阶段（已启动）
+## 页面清单
 
-## 工作记录
+### 已完成页面 ✅
 
-### [2026-04-30] 加入项目 + PRD评审
-- 状态: 评审完成，PRD v1.2已确认
-- 评审输出: REVIEW_frontend.md（5项技术风险+建议）
+| 页面 | 路径 | 状态 | 说明 |
+|------|------|------|------|
+| 首页 | `pages/index/index` | ✅ | 欢迎页、拍照CTA、最近记录 |
+| 拍照页 | `pages/detect/index` | ✅ | 场景选择、拍照/相册 |
+| 确认页 | `pages/detect/confirm` | ✅ | 照片确认 |
+| 分析中 | `pages/detect/analyzing` | ✅ | 加载动画、趣味文案 |
+| 检测报告 | `pages/detect/report` | ✅ | 分数、雷达图、辣评、分享 |
+| **圈子** | `pages/social/index` | ✅ | 信息流、帖子卡片、互动按钮 |
+| **发布** | `pages/social/publish` | ✅ | 发帖、话题标签、匿名选项 |
+| **帖子详情** | `pages/social/detail` | ✅ | 帖子详情、评论区 |
+| **方案列表** | `pages/plans/index` | ✅ | 方案推荐、分类筛选、进度 |
+| **方案详情** | `pages/plans/detail` | ✅ | 行动项、打卡、日历、复测入口 |
+| **分享海报** | `pages/share/poster` | ✅ | 4种模板、Canvas绘制、保存分享 |
+| **个人中心** | `pages/profile/index` | ✅ | 用户信息、统计、成就、趋势 |
+| **设置** | `pages/profile/settings` | ✅ | 开关设置、清除缓存、关于 |
+| **我的方案** | `pages/profile/my-plans` | ✅ | 进行中/已完成方案列表 |
+| **我的帖子** | `pages/profile/my-posts` | ✅ | 检测记录+帖子历史 |
 
-### [2026-04-30] 开发阶段启动
-- 状态: 🟢 进行中
-- 技术选型: Taro 3.x + React + TypeScript + Recoil
-- 任务: 项目初始化 + 组件库搭建 + Mock接口
-- 截止: 2026-05-12完成核心功能
+### 全局组件 ✅
+- `Button` — 4种变体(primary/secondary/ghost/danger)、3种尺寸、loading态
+- `Card` — 3种变体(default/social/elevated)、可点击
+- `Tag` — 6种变色(fresh/tipsy/strong/extreme/brand/default)
+- `RadarChart` — Canvas绘制雷达图，自动根据分数使用情绪色
 
-## 重要决策
-- 框架选型: Taro 3.x（支持多端输出）
-- 状态管理: Recoil（轻量，适合小程序）
+### 设计系统
+- 色彩: OKLCH品牌色 + 4级情绪色(fresh/tipsy/strong/extreme)
+- 间距: 4pt基准系统
+- 圆角: sm/md/lg/xl/2xl/full
+- 阴影: sm/md/lg/xl
+- 动画: 页面入场slideUp、按钮按下scale、进度条ease-out-expo
 
-## 遇到的问题
+## 待优化事项
+- [ ] 海报页面需要完善Canvas绘制（当前为基础实现）
+- [ ] 添加骨架屏加载态
+- [ ] 完善错误状态处理
+- [ ] 接入真实API替换mock数据
+- [ ] 添加图片懒加载
+- [ ] 完善路由守卫和登录态管理
+- [ ] 添加小程序分享配置
 
-## 学习收获
-
-## 待办事项
-- [ ] Taro项目初始化
-- [ ] 目录结构搭建
-- [ ] 全局样式+CSS变量+深色模式
-- [ ] 路由配置
-- [ ] 请求拦截器封装
-- [ ] Recoil Store初始化
-- [ ] 基础组件库（Button/Card/Modal/Toast）
-- [ ] 微信登录模块
-- [ ] 检测模块4个页面
-- [ ] 方案模块
-- [ ] 社交模块
-- [ ] 个人中心模块
-- [ ] 分享海报功能
-- [ ] 性能优化
-
-## 备注
+## 最近更新
+- 2024-04-30: 完成剩余所有页面（圈子、方案、海报、个人中心及子页面）
+- 2024-04-30: 完善所有页面的SCSS样式
+- 2024-04-30: 修复 report.tsx 缺少 useState import 的问题
+- 2024-04-30: 修复 social/index.tsx typo (likedCount -> likeCount)

@@ -1,0 +1,162 @@
+@import '../../styles/variables.scss';
+
+.my-plans-page {
+  min-height: 100vh;
+  background: $color-surface;
+
+  &__header {
+    padding: $space-6 $space-4 $space-4;
+    background: linear-gradient(180deg, $color-brand-muted 0%, $color-surface 100%);
+  }
+
+  &__title {
+    font-size: $text-display;
+    color: $color-text-primary;
+    font-family: $font-display;
+  }
+
+  &__tabs {
+    display: flex;
+    padding: 0 $space-4;
+    gap: $space-4;
+    margin-bottom: $space-4;
+
+    .tab-item {
+      padding: $space-2 $space-6;
+      border-radius: $radius-full;
+      background: $color-surface-raised;
+      border: 2rpx solid $color-border-subtle;
+      transition: all $duration-fast;
+
+      Text {
+        font-size: $text-body;
+        color: $color-text-secondary;
+      }
+
+      &--active {
+        background: $color-brand;
+        border-color: $color-brand;
+
+        Text {
+          color: $color-text-inverse;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+
+  &__scroll {
+    height: calc(100vh - 320rpx);
+  }
+
+  &__list {
+    padding: 0 $space-4;
+    display: flex;
+    flex-direction: column;
+    gap: $space-4;
+  }
+
+  &__bottom {
+    height: 160rpx;
+  }
+}
+
+.my-plan-card {
+  overflow: hidden;
+
+  &__header {
+    @include flex-between;
+    padding: $space-3 $space-4;
+    margin: -$space-4 -$space-4 $space-3;
+    border-radius: $radius-lg $radius-lg 0 0;
+  }
+
+  &__name {
+    font-size: $text-subheading;
+    font-weight: 600;
+    color: $color-text-primary;
+    margin-bottom: $space-3;
+  }
+
+  &__progress {
+    margin-bottom: $space-3;
+
+    .progress-info {
+      @include flex-between;
+      margin-bottom: $space-2;
+    }
+
+    .progress-label {
+      font-size: $text-small;
+      color: $color-text-secondary;
+    }
+
+    .progress-value {
+      font-size: $text-small;
+      font-weight: 600;
+      color: $color-text-primary;
+    }
+  }
+
+  &__meta {
+    .meta-text {
+      font-size: $text-caption;
+      color: $color-text-tertiary;
+    }
+  }
+
+  &__action {
+    margin-top: $space-3;
+    padding-top: $space-3;
+    border-top: 2rpx solid $color-border-subtle;
+    display: flex;
+    justify-content: flex-end;
+
+    .action-btn {
+      font-size: $text-body;
+      font-weight: 600;
+    }
+  }
+}
+
+.completed-badge {
+  padding: $space-1 $space-3;
+  background: $color-success + '20';
+  border-radius: $radius-sm;
+
+  Text {
+    font-size: $text-caption;
+    color: $color-success;
+    font-weight: 600;
+  }
+}
+
+.progress-track {
+  height: 16rpx;
+  background: $color-border-subtle;
+  border-radius: $radius-full;
+  overflow: hidden;
+}
+
+.progress-fill {
+  height: 100%;
+  border-radius: $radius-full;
+  transition: width $duration-slow $ease-out-expo;
+}
+
+.empty-state {
+  @include flex-center;
+  flex-direction: column;
+  padding: $space-16 0;
+  gap: $space-4;
+
+  &__icon {
+    font-size: $text-emoji;
+  }
+
+  &__text {
+    font-size: $text-body;
+    color: $color-text-tertiary;
+    text-align: center;
+  }
+}

@@ -1,0 +1,318 @@
+@import '../../styles/variables.scss';
+
+.social-page {
+  min-height: 100vh;
+  background: $color-surface;
+  padding-bottom: calc(120rpx + env(safe-area-inset-bottom));
+
+  &__header {
+    padding: $space-6 $space-4;
+    background: linear-gradient(180deg, $color-brand-muted 0%, $color-surface 100%);
+  }
+
+  &__title {
+    font-size: $text-display;
+    color: $color-text-primary;
+    font-family: $font-display;
+    display: block;
+    margin-bottom: $space-1;
+  }
+
+  &__subtitle {
+    font-size: $text-small;
+    color: $color-text-secondary;
+  }
+
+  &__tabs {
+    display: flex;
+    padding: 0 $space-4;
+    gap: $space-3;
+    margin-bottom: $space-4;
+
+    .tab-item {
+      padding: $space-2 $space-4;
+      border-radius: $radius-full;
+      background: $color-surface-raised;
+      border: 2rpx solid $color-border-subtle;
+      transition: all $duration-fast $ease-out-quart;
+
+      &--active {
+        background: $color-brand;
+        border-color: $color-brand;
+
+        .tab-text {
+          color: $color-text-inverse;
+          font-weight: 600;
+        }
+      }
+    }
+
+    .tab-text {
+      font-size: $text-small;
+      color: $color-text-secondary;
+    }
+  }
+
+  &__scroll {
+    height: calc(100vh - 280rpx);
+  }
+
+  &__list {
+    padding: 0 $space-4;
+    display: flex;
+    flex-direction: column;
+    gap: $space-4;
+  }
+
+  &__bottom {
+    height: 160rpx;
+  }
+}
+
+// 帖子卡片
+.post-card {
+  &__header {
+    @include flex-between;
+    margin-bottom: $space-3;
+  }
+
+  &__user {
+    display: flex;
+    align-items: center;
+    gap: $space-3;
+  }
+
+  &__avatar {
+    width: 72rpx;
+    height: 72rpx;
+    border-radius: $radius-full;
+    background: $color-brand-muted;
+    @include flex-center;
+    font-size: 36rpx;
+  }
+
+  &__meta {
+    display: flex;
+    flex-direction: column;
+    gap: $space-1;
+  }
+
+  &__name {
+    font-size: $text-body;
+    font-weight: 600;
+    color: $color-text-primary;
+  }
+
+  &__time {
+    font-size: $text-caption;
+    color: $color-text-tertiary;
+  }
+
+  &__type-badge {
+    padding: $space-1 $space-3;
+    background: $color-brand-muted;
+    border-radius: $radius-sm;
+  }
+
+  &__type-text {
+    font-size: $text-caption;
+    color: $color-brand;
+    font-weight: 500;
+  }
+
+  &__body {
+    margin-bottom: $space-3;
+  }
+
+  // 检测卡片内嵌
+  &__detect-card {
+    border-radius: $radius-md;
+    padding: $space-4;
+    margin-bottom: $space-3;
+  }
+
+  // 打卡卡片内嵌
+  &__checkin-card {
+    display: flex;
+    align-items: center;
+    gap: $space-3;
+    background: $color-tipsy-bg;
+    border-radius: $radius-md;
+    padding: $space-4;
+    margin-bottom: $space-3;
+
+    .checkin-card__icon {
+      font-size: 48rpx;
+    }
+
+    .checkin-card__info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .checkin-card__plan {
+      font-size: $text-body;
+      font-weight: 600;
+      color: $color-text-primary;
+    }
+
+    .checkin-card__days {
+      font-size: $text-small;
+      color: $color-text-secondary;
+    }
+
+    .checkin-card__highlight {
+      color: $color-brand;
+      font-weight: 700;
+    }
+  }
+
+  &__text {
+    font-size: $text-body;
+    color: $color-text-primary;
+    line-height: $leading-normal;
+  }
+
+  &__images {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: $space-2;
+    margin-top: $space-3;
+  }
+
+  &__image {
+    width: 100%;
+    height: 200rpx;
+    border-radius: $radius-md;
+    object-fit: cover;
+  }
+
+  &__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: $space-2;
+    margin-top: $space-3;
+  }
+
+  &__tag {
+    padding: $space-1 $space-3;
+    background: $color-surface;
+    border-radius: $radius-full;
+    border: 2rpx solid $color-border-subtle;
+  }
+
+  &__tag-text {
+    font-size: $text-caption;
+    color: $color-brand;
+  }
+
+  &__footer {
+    @include flex-between;
+    padding-top: $space-3;
+    border-top: 2rpx solid $color-border-subtle;
+  }
+}
+
+// 互动按钮
+.action-btn {
+  display: flex;
+  align-items: center;
+  gap: $space-1;
+  padding: $space-2 $space-3;
+  border-radius: $radius-md;
+  transition: all $duration-fast;
+
+  &--active {
+    .action-btn__icon {
+      transform: scale(1.1);
+    }
+
+    .action-btn__count {
+      color: $color-brand;
+      font-weight: 600;
+    }
+  }
+
+  &__icon {
+    font-size: 32rpx;
+    transition: transform $duration-fast $ease-out-quart;
+  }
+
+  &__count {
+    font-size: $text-small;
+    color: $color-text-secondary;
+  }
+}
+
+// 检测卡片
+.detect-card {
+  &__score-row {
+    display: flex;
+    align-items: center;
+    gap: $space-4;
+  }
+
+  &__score {
+    font-size: $text-hero;
+    font-weight: 700;
+    font-family: $font-display;
+  }
+
+  &__info {
+    display: flex;
+    flex-direction: column;
+    gap: $space-1;
+  }
+
+  &__label {
+    font-size: $text-small;
+    color: $color-text-secondary;
+  }
+}
+
+// 浮动发布按钮
+.fab-publish {
+  position: fixed;
+  right: $space-6;
+  bottom: calc(120rpx + env(safe-area-inset-bottom));
+  width: 120rpx;
+  height: 120rpx;
+  border-radius: $radius-full;
+  background: $color-brand;
+  @include shadow-lg;
+  @include flex-center;
+  flex-direction: column;
+  gap: $space-1;
+  z-index: 100;
+  transition: transform $duration-fast $ease-out-quart;
+
+  &:active {
+    transform: scale(0.92);
+  }
+
+  &__icon {
+    font-size: 40rpx;
+  }
+
+  &__text {
+    font-size: $text-caption;
+    color: $color-text-inverse;
+    font-weight: 600;
+  }
+}
+
+// 动画
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-slide-up {
+  animation: slideUp $duration-slow $ease-out-expo both;
+}

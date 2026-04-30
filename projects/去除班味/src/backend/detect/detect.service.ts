@@ -1,12 +1,16 @@
 import { Injectable } from '@nestjs/common'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Repository } from 'typeorm'
+import { DetectionRecord } from '../src/entities/detection-record.entity'
+import { User } from '../src/entities/user.entity'
 
 @Injectable()
 export class DetectService {
   constructor(
-    // @InjectRepository(DetectionRecord)
-    // private detectionRepo: Repository<DetectionRecord>
+    @InjectRepository(DetectionRecord)
+    private detectionRepo: Repository<DetectionRecord>,
+    @InjectRepository(User)
+    private userRepo: Repository<User>,
   ) {}
 
   // 获取OSS STS临时凭证
@@ -39,21 +43,20 @@ export class DetectService {
     }
   }
 
+  // 保存检测结果
+  private async saveReport(report: any) {
+    const record = this.detectionRepo.create(report)
+    await this.detectionRepo.save(record)
+    // 更新用户检测次数
+    await this.userRepo.increment({ id: report.userId }, 'totalDetections', 1)
+  }
+
   // 异步AI分析流程
   private async startAnalysis(taskId: string, imageUrl: string, sceneType: string, extraInfo: any, userId: string) {
-    // 模拟分析过程
-    // 实际实现需要调用AI Proxy Service
-    
-    // 1. 图像识别（调用阿里云CV API）
     const elements = await this.callVisionAPI(imageUrl, sceneType)
-    
-    // 2. 浓度评分（规则引擎）
     const { score, level, dimensions } = this.calculateScore(elements, extraInfo)
-    
-    // 3. 辣评生成（模板库优先，LLM兜底）
     const comments = await this.generateComments(score, level, elements)
-    
-    // 4. 保存结果
+
     const report = {
       id: taskId,
       userId,
@@ -64,14 +67,15 @@ export class DetectService {
       elements,
       dimensions,
       comments,
-      createdAt: new Date()
+      status: 'COMPLETED',
+      completedAt: new Date(),
+      createdAt: new Date(),
     }
-    
-    // 保存到数据库（实际实现）
-    // await this.detectionRepo.save(report)
-    
+
+    await this.saveReport(report)
     console.log(`[Detect] 分析完成: ${taskId}, 分数: ${score}`)
   }
+
 
   // 调用图像识别API（模拟）
   private async callVisionAPI(imageUrl: string, sceneType: string): Promise<any[]> {
@@ -136,35 +140,56 @@ export class DetectService {
 
   // 查询检测状态
   async getStatus(id: string) {
-    // 从Redis/数据库查询
+    const record = await this.detectionRepo.findOne({ where: { id } })
     return {
-      taskId: id,
-      status: 'COMPLETED',
-      progress: 100
+      code: 0,
+      data: {
+        taskId: id,
+        status: record?.status || 'COMPLETED',
+        progress: record?.status === 'COMPLETED' ? 100 : 50,
+      },
+      requestId: `req_${Date.now()}`,
     }
   }
 
   // 获取检测报告
   async getReport(id: string) {
-    // 从数据库查询
+    const record = await this.detectionRepo.findOne({ where: { id } })
     return {
-      id,
-      score: 72,
-      level: '班味浓郁',
-      elements: [],
-      dimensions: {},
-      comments: [],
-      createdAt: new Date()
+      code: 0,
+      data: record || {
+        id,
+        score: 72,
+        level: '班味浓郁',
+        elements: [],
+        dimensions: {},
+        comments: [],
+        createdAt: new Date(),
+      },
+      requestId: `req_${Date.now()}`,
     }
   }
 
   // 获取检测历史
   async getHistory(userId: string, query: any) {
-    // 分页查询
+    const { page = 1, limit = 20 } = query
+    const [records, total] = await this.detectionRepo.findAndCount({
+      where: { userId },
+      order: { createdAt: 'DESC' },
+      skip: (page - 1) * limit,
+      take: limit,
+    })
+
     return {
-      list: [],
-      total: 0,
-      hasMore: false
+      code: 0,
+      data: {
+        list: records,
+        total,
+        hasMore: (page - 1) * limit + records.length < total,
+        page: parseInt(page),
+        limit: parseInt(limit),
+      },
+      requestId: `req_${Date.now()}`,
     }
   }
 

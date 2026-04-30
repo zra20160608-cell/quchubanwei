@@ -1,0 +1,117 @@
+@import '../../styles/variables.scss';
+
+.settings-page {
+  min-height: 100vh;
+  background: $color-surface;
+  padding: $space-4;
+  padding-bottom: calc($space-6 + env(safe-area-inset-bottom));
+
+  &__header {
+    margin-bottom: $space-6;
+  }
+
+  &__title {
+    font-size: $text-display;
+    color: $color-text-primary;
+    font-family: $font-display;
+  }
+
+  &__section {
+    margin-bottom: $space-6;
+
+    .section-title {
+      font-size: $text-small;
+      font-weight: 600;
+      color: $color-text-tertiary;
+      text-transform: uppercase;
+      letter-spacing: 2rpx;
+      margin-bottom: $space-3;
+      display: block;
+    }
+  }
+
+  &__footer {
+    margin-top: $space-8;
+    @include flex-center;
+    flex-direction: column;
+    gap: $space-4;
+  }
+}
+
+.settings-list {
+  .setting-item {
+    @include flex-between;
+    padding: $space-4 0;
+    border-bottom: 2rpx solid $color-border-subtle;
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    &--button {
+      &:active {
+        opacity: 0.7;
+      }
+    }
+
+    &__left {
+      display: flex;
+      align-items: center;
+      gap: $space-3;
+    }
+
+    &__icon {
+      font-size: 36rpx;
+      width: 48rpx;
+      @include flex-center;
+    }
+
+    &__info {
+      display: flex;
+      flex-direction: column;
+      gap: $space-1;
+    }
+
+    &__label {
+      font-size: $text-body;
+      color: $color-text-primary;
+    }
+
+    &__desc {
+      font-size: $text-caption;
+      color: $color-text-tertiary;
+    }
+
+    &__switch {
+      transform: scale(0.85);
+    }
+
+    &__arrow {
+      font-size: $text-body;
+      color: $color-text-tertiary;
+    }
+  }
+}
+
+.logout-btn {
+  padding: $space-4 $space-12;
+  border-radius: $radius-full;
+  border: 2rpx solid $color-error;
+  background: transparent;
+  @include flex-center;
+
+  &:active {
+    background: $color-error + '10';
+  }
+
+  &__text {
+    font-size: $text-body;
+    color: $color-error;
+    font-weight: 500;
+  }
+}
+
+.version-text {
+  font-size: $text-caption;
+  color: $color-text-tertiary;
+}

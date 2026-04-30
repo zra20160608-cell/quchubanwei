@@ -1,5 +1,6 @@
 import Taro from '@tarojs/taro'
 import { View, Text, Image, Button, ScrollView } from '@tarojs/components'
+import { useState } from 'react'
 import { useRecoilState } from 'recoil'
 import { detectTaskState } from '../../stores'
 import { generatePoster } from '../../services/detect'
