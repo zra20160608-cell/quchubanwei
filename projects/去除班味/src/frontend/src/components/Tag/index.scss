@@ -1,0 +1,57 @@
+@import '../../styles/variables.scss';
+
+.bw-tag {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: $radius-full;
+  font-weight: 500;
+  white-space: nowrap;
+
+  &--sm {
+    padding: $space-1 $space-3;
+    font-size: $text-caption;
+    min-height: 36rpx;
+  }
+
+  &--md {
+    padding: $space-1 $space-4;
+    font-size: $text-small;
+    min-height: 44rpx;
+  }
+
+  &--default {
+    background: $color-surface;
+    color: $color-text-secondary;
+    border: 1rpx solid $color-border;
+  }
+
+  &--fresh {
+    background: $color-fresh-bg;
+    color: $color-fresh;
+  }
+
+  &--tipsy {
+    background: $color-tipsy-bg;
+    color: $color-tipsy;
+  }
+
+  &--strong {
+    background: $color-strong-bg;
+    color: $color-strong;
+  }
+
+  &--extreme {
+    background: $color-extreme-bg;
+    color: $color-extreme;
+  }
+
+  &--brand {
+    background: $color-brand-muted;
+    color: $color-brand;
+  }
+
+  &__text {
+    line-height: 1.2;
+  }
+}

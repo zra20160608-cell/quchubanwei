@@ -1,0 +1,45 @@
+@import '../../styles/variables.scss';
+
+.bw-card {
+  background: $color-surface-raised;
+  border-radius: $radius-lg;
+  transition: transform $duration-fast $ease-out-quart, box-shadow $duration-fast $ease-out-quart;
+
+  &--default {
+    border: 1rpx solid $color-border-subtle;
+    @include shadow-md;
+  }
+
+  &--social {
+    background: $color-white;
+    border: none;
+    @include shadow-lg;
+  }
+
+  &--elevated {
+    background: $color-white;
+    border: none;
+    @include shadow-xl;
+  }
+
+  &--padding-sm {
+    padding: $space-3;
+  }
+
+  &--padding-md {
+    padding: $space-4;
+  }
+
+  &--padding-lg {
+    padding: $space-5;
+  }
+
+  &--clickable {
+    cursor: pointer;
+
+    &:active {
+      transform: scale(0.98);
+      @include shadow-md;
+    }
+  }
+}

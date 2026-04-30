@@ -1,0 +1,125 @@
+@import '../../styles/variables.scss';
+
+.bw-button {
+  @include flex-center;
+  position: relative;
+  border: none;
+  cursor: pointer;
+  transition: all $duration-fast $ease-out-quart;
+  font-family: $font-body;
+  font-weight: 500;
+  text-align: center;
+  overflow: hidden;
+
+  &::after {
+    border: none;
+  }
+
+  // 尺寸变体
+  &--sm {
+    padding: $space-2 $space-4;
+    font-size: $text-small;
+    min-height: 64rpx;
+  }
+
+  &--md {
+    padding: $space-3 $space-6;
+    font-size: $text-body;
+    min-height: 88rpx;
+  }
+
+  &--lg {
+    padding: $space-4 $space-8;
+    font-size: $text-subheading;
+    min-height: 112rpx;
+  }
+
+  // 颜色变体
+  &--primary {
+    background: $color-brand;
+    color: $color-text-inverse;
+    @include shadow-md;
+
+    &:active {
+      background: $color-brand-dark;
+      transform: scale(0.98);
+    }
+  }
+
+  &--secondary {
+    background: transparent;
+    color: $color-brand;
+    border: 3rpx solid $color-brand;
+
+    &:active {
+      background: $color-brand-muted;
+      transform: scale(0.98);
+    }
+  }
+
+  &--ghost {
+    background: transparent;
+    color: $color-text-secondary;
+
+    &:active {
+      background: $color-surface;
+      color: $color-text-primary;
+    }
+  }
+
+  &--danger {
+    background: $color-error;
+    color: $color-text-inverse;
+
+    &:active {
+      opacity: 0.9;
+      transform: scale(0.98);
+    }
+  }
+
+  // 状态
+  &--disabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
+  &--loading {
+    pointer-events: none;
+
+    .bw-button__content {
+      opacity: 0.6;
+    }
+  }
+
+  &--full {
+    width: 100%;
+  }
+
+  &--rounded {
+    border-radius: $radius-full;
+  }
+
+  &:not(.bw-button--rounded) {
+    border-radius: $radius-md;
+  }
+
+  // 加载动画
+  &__spinner {
+    position: absolute;
+    width: 32rpx;
+    height: 32rpx;
+    border: 4rpx solid rgba(255, 255, 255, 0.3);
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+  }
+
+  &__content {
+    @include flex-center;
+    gap: $space-2;
+  }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}

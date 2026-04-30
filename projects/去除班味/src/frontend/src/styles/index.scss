@@ -1,0 +1,79 @@
+// CSS变量体系：支持深色模式
+:root {
+  // 主色
+  --color-primary: #FF6B6B;
+  --color-secondary: #4ECDC4;
+  --color-accent: #FFE66D;
+
+  // 中性色
+  --color-text-primary: #2C3E50;
+  --color-text-secondary: #7F8C8D;
+  --color-bg: #F8F9FA;
+  --color-card: #FFFFFF;
+  --color-border: #E8E8E8;
+
+  // 等级色
+  --color-level-fresh: #27AE60;
+  --color-level-light: #F39C12;
+  --color-level-heavy: #E67E22;
+  --color-level-extreme: #C0392B;
+}
+
+// 深色模式
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-text-primary: #ECF0F1;
+    --color-text-secondary: #95A5A6;
+    --color-bg: #1A1A2E;
+    --color-card: #16213E;
+    --color-border: #2D3748;
+  }
+}
+
+page {
+  background-color: var(--color-bg);
+  color: var(--color-text-primary);
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+}
+
+.container {
+  padding: 32px;
+}
+
+.card {
+  background: var(--color-card);
+  border-radius: 24px;
+  padding: 32px;
+  margin-bottom: 24px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+.btn-primary {
+  background: var(--color-primary);
+  color: #FFFFFF;
+  border-radius: 48px;
+  height: 96px;
+  line-height: 96px;
+  font-size: 32px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.btn-secondary {
+  background: var(--color-secondary);
+  color: #FFFFFF;
+  border-radius: 48px;
+  height: 96px;
+  line-height: 96px;
+  font-size: 32px;
+  font-weight: 600;
+  text-align: center;
+}
+
+.text-primary {
+  color: var(--color-text-primary);
+}
+
+.text-secondary {
+  color: var(--color-text-secondary);
+}
