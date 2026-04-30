@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Query, UseGuards } from '@nestjs/common'
+import { Controller, Get, Post, Body, Param, Query, UseGuards, Request } from '@nestjs/common'
 import { DetectService } from './detect.service'
 import { AuthGuard } from '../auth/auth.guard'
 
@@ -15,8 +15,8 @@ export class DetectController {
 
   // 创建检测任务
   @Post()
-  createDetectTask(@Body() body: any, @Query('userId') userId: string) {
-    return this.detectService.createTask(body, userId)
+  createDetectTask(@Body() body: any, @Request() req) {
+    return this.detectService.createTask(body, req.userId)
   }
 
   // 查询检测状态
@@ -33,8 +33,8 @@ export class DetectController {
 
   // 获取检测历史
   @Get('history')
-  getDetectHistory(@Query() query: any, @Query('userId') userId: string) {
-    return this.detectService.getHistory(userId, query)
+  getDetectHistory(@Query() query: any, @Request() req) {
+    return this.detectService.getHistory(req.userId, query)
   }
 
   // 生成分享海报

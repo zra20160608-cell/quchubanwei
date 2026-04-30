@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Put,
+  Body,
   Query,
   Request,
   UseGuards,
@@ -22,8 +23,8 @@ export class UserController {
 
   // 更新用户信息
   @Put('profile')
-  updateProfile(@Query() query: any, @Request() req) {
-    return this.userService.updateProfile(req.userId, query)
+  updateProfile(@Body() body: any, @Request() req) {
+    return this.userService.updateProfile(req.userId, body)
   }
 
   // 用户等级

@@ -77,6 +77,32 @@ export class PlanService {
     return this.wrapResponse(recommended.slice(0, 5))
   }
 
+  // 获取方案详情
+  async getPlanDetail(id: string) {
+    const plan = await this.userPlanRepo.findOne({
+      where: { id },
+      relations: ['planTemplate'],
+    })
+    if (!plan) throw new NotFoundException('方案不存在')
+
+    return this.wrapResponse({
+      id: plan.id,
+      planId: plan.planTemplateId,
+      planName: plan.planName,
+      category: plan.category,
+      status: plan.status,
+      currentDay: plan.currentDay,
+      totalDays: plan.totalDays,
+      completedDays: plan.completedDays,
+      missedDays: plan.missedDays,
+      makeUpDays: plan.makeUpDays,
+      startedAt: plan.startedAt,
+      endedAt: plan.endedAt,
+      completedAt: plan.completedAt,
+      actions: plan.planTemplate?.actions || [],
+    })
+  }
+
   // 选择方案
   async selectPlan(planTemplateId: string, userId: string, detectId?: string) {
     const template = await this.planTemplateRepo.findOne({ where: { id: planTemplateId } })

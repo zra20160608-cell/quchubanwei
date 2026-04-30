@@ -3,6 +3,7 @@ import {
   Get,
   Put,
   Query,
+  Param,
   Request,
   UseGuards,
 } from '@nestjs/common'
@@ -22,7 +23,7 @@ export class NotificationController {
 
   // 标记单条已读
   @Put(':id/read')
-  markRead(@Query('id') id: string, @Request() req) {
+  markRead(@Param('id') id: string, @Request() req) {
     return this.notificationService.markRead(id, req.userId)
   }
 
