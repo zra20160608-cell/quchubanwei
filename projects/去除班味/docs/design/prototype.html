@@ -1,0 +1,1449 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>去除班味 - 原型预览</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=LXGW+WenKai&display=swap" rel="stylesheet">
+<style>
+/* ===== 基础重置 ===== */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
+body {
+  font-family: 'LXGW WenKai', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+  background: oklch(20% 0.01 45);
+  display: flex; align-items: center; justify-content: center;
+  min-height: 100vh;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ===== OKLCH 色彩系统 ===== */
+:root {
+  /* 品牌色 */
+  --color-brand: oklch(65% 0.18 45);
+  --color-brand-light: oklch(75% 0.12 45);
+  --color-brand-dark: oklch(55% 0.20 45);
+  --color-brand-muted: oklch(85% 0.06 45);
+
+  /* 情绪色 */
+  --color-fresh: oklch(75% 0.12 160);
+  --color-fresh-bg: oklch(96% 0.03 160);
+  --color-tipsy: oklch(80% 0.14 85);
+  --color-tipsy-bg: oklch(97% 0.04 85);
+  --color-strong: oklch(65% 0.18 45);
+  --color-strong-bg: oklch(96% 0.05 45);
+  --color-extreme: oklch(50% 0.20 25);
+  --color-extreme-bg: oklch(95% 0.05 25);
+
+  /* 中性色（偏暖橙） */
+  --color-white: oklch(99% 0.005 45);
+  --color-surface: oklch(97% 0.008 45);
+  --color-surface-raised: oklch(100% 0.004 45);
+  --color-border: oklch(88% 0.015 45);
+  --color-border-subtle: oklch(93% 0.008 45);
+  --color-text-primary: oklch(25% 0.02 45);
+  --color-text-secondary: oklch(45% 0.03 45);
+  --color-text-tertiary: oklch(60% 0.02 45);
+  --color-text-inverse: oklch(99% 0.005 45);
+
+  /* 功能色 */
+  --color-success: oklch(65% 0.14 145);
+  --color-warning: oklch(75% 0.16 80);
+  --color-error: oklch(55% 0.20 25);
+
+  /* 间距系统 */
+  --space-1: 0.25rem; --space-2: 0.5rem; --space-3: 0.75rem;
+  --space-4: 1rem; --space-5: 1.25rem; --space-6: 1.5rem;
+  --space-8: 2rem; --space-10: 2.5rem; --space-12: 3rem;
+
+  /* 圆角 */
+  --radius-sm: 0.5rem; --radius-md: 0.75rem; --radius-lg: 1rem;
+  --radius-xl: 1.25rem; --radius-2xl: 1.5rem; --radius-full: 9999px;
+
+  /* 阴影 */
+  --shadow-sm: 0 1px 2px oklch(0% 0 0 / 0.05);
+  --shadow-md: 0 4px 6px -1px oklch(0% 0 0 / 0.08), 0 2px 4px -1px oklch(0% 0 0 / 0.04);
+  --shadow-lg: 0 10px 15px -3px oklch(0% 0 0 / 0.08), 0 4px 6px -2px oklch(0% 0 0 / 0.04);
+  --shadow-xl: 0 20px 25px -5px oklch(0% 0 0 / 0.08), 0 10px 10px -5px oklch(0% 0 0 / 0.03);
+
+  /* 动画 */
+  --ease-out-quart: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --duration-fast: 200ms;
+  --duration-normal: 300ms;
+  --duration-slow: 500ms;
+}
+
+/* ===== 手机容器 ===== */
+.phone-frame {
+  width: 375px;
+  height: 812px;
+  background: var(--color-surface);
+  border-radius: 40px;
+  overflow: hidden;
+  position: relative;
+  box-shadow: 0 25px 50px -12px oklch(0% 0 0 / 0.25), 0 0 0 8px oklch(30% 0.02 45);
+}
+.phone-screen {
+  width: 100%; height: 100%;
+  overflow: hidden; position: relative;
+  display: flex; flex-direction: column;
+}
+
+/* ===== 页面容器 ===== */
+.pages {
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+  position: relative;
+  scrollbar-width: none;
+}
+.pages::-webkit-scrollbar { display: none; }
+
+.page {
+  display: none;
+  min-height: 100%;
+  animation: slideUp var(--duration-slow) var(--ease-out-expo) both;
+}
+.page.active { display: block; }
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ===== 字体工具类 ===== */
+.font-display { font-family: 'ZCOOL KuaiLe', cursive; }
+.font-body { font-family: 'LXGW WenKai', 'PingFang SC', system-ui, sans-serif; }
+
+/* ===== 导航栏 ===== */
+.nav-bar {
+  height: 56px;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 var(--space-4);
+  background: var(--color-surface-raised);
+  border-bottom: 1px solid var(--color-border-subtle);
+  flex-shrink: 0;
+  z-index: 10;
+}
+.nav-bar .title {
+  font-size: 1.125rem; font-weight: 600;
+  color: var(--color-text-primary);
+  font-family: 'ZCOOL KuaiLe', cursive;
+}
+.nav-btn {
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  border-radius: var(--radius-full);
+  color: var(--color-text-primary);
+  font-size: 1.25rem;
+  transition: background var(--duration-fast);
+  cursor: pointer; user-select: none;
+}
+.nav-btn:hover { background: var(--color-surface); }
+.nav-btn:active { transform: scale(0.95); }
+
+/* ===== 底部Tab栏 ===== */
+.tab-bar {
+  height: 64px;
+  background: oklch(100% 0.004 45 / 0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-top: 1px solid var(--color-border-subtle);
+  display: flex; align-items: center; justify-content: space-around;
+  flex-shrink: 0;
+  z-index: 10;
+}
+.tab-item {
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  gap: 2px;
+  padding: var(--space-2) var(--space-4);
+  color: var(--color-text-tertiary);
+  font-size: 0.625rem;
+  cursor: pointer; transition: color var(--duration-fast);
+  user-select: none;
+}
+.tab-item .tab-icon { font-size: 1.25rem; line-height: 1; }
+.tab-item.active { color: var(--color-brand); }
+.tab-item:active { transform: scale(0.92); }
+
+/* ===== 按钮组件 ===== */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  gap: var(--space-2);
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-full);
+  font-size: 1rem; font-weight: 500;
+  font-family: 'LXGW WenKai', sans-serif;
+  cursor: pointer; border: none;
+  transition: all var(--duration-fast) var(--ease-out-quart);
+  user-select: none;
+}
+.btn-primary {
+  background: var(--color-brand);
+  color: var(--color-text-inverse);
+  box-shadow: var(--shadow-md);
+}
+.btn-primary:hover { background: var(--color-brand-dark); transform: translateY(-1px); }
+.btn-primary:active { transform: scale(0.97); }
+
+.btn-secondary {
+  background: transparent;
+  color: var(--color-brand);
+  border: 1.5px solid var(--color-brand);
+}
+.btn-secondary:hover { background: var(--color-brand-muted); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--color-text-secondary);
+}
+.btn-ghost:hover { background: var(--color-surface); }
+
+.btn-lg { padding: var(--space-4) var(--space-8); font-size: 1.125rem; }
+
+/* ===== 卡片组件 ===== */
+.card {
+  background: var(--color-surface-raised);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  border: 1px solid var(--color-border-subtle);
+  padding: var(--space-4);
+  transition: transform var(--duration-fast), box-shadow var(--duration-fast);
+}
+.card-hover:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+
+.card-social {
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  padding: var(--space-5);
+}
+
+/* ===== 标签组件 ===== */
+.tag {
+  display: inline-flex; align-items: center;
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-full);
+  font-size: 0.75rem; font-weight: 500;
+  white-space: nowrap;
+}
+.tag-fresh { background: var(--color-fresh-bg); color: var(--color-fresh); }
+.tag-tipsy { background: var(--color-tipsy-bg); color: oklch(55% 0.14 85); }
+.tag-strong { background: var(--color-strong-bg); color: var(--color-strong); }
+.tag-extreme { background: var(--color-extreme-bg); color: var(--color-extreme); }
+
+/* ===== 分数显示 ===== */
+.score-number {
+  font-size: 4rem; font-weight: 700;
+  line-height: 1;
+  font-family: 'ZCOOL KuaiLe', cursive;
+}
+.score-label {
+  font-size: 1.25rem;
+  font-family: 'ZCOOL KuaiLe', cursive;
+}
+
+/* ===== 雷达图 ===== */
+.radar-container {
+  position: relative;
+  width: 240px; height: 240px;
+  margin: 0 auto;
+}
+.radar-container canvas {
+  width: 100%; height: 100%;
+}
+
+/* ===== 进度条 ===== */
+.progress-track {
+  width: 100%; height: 8px;
+  background: var(--color-border-subtle);
+  border-radius: var(--radius-full);
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  border-radius: var(--radius-full);
+  background: var(--color-brand);
+  transition: width 1.5s var(--ease-out-expo);
+}
+
+/* ===== 引用/辣评卡片 ===== */
+.quote-card {
+  position: relative;
+  background: var(--color-surface-raised);
+  border-radius: var(--radius-lg);
+  padding: var(--space-5);
+  margin: var(--space-4) 0;
+}
+.quote-card::before {
+  content: '"';
+  position: absolute;
+  top: var(--space-2); left: var(--space-4);
+  font-size: 3rem; line-height: 1;
+  color: var(--color-brand-light);
+  font-family: 'ZCOOL KuaiLe', cursive;
+  opacity: 0.5;
+}
+.quote-text {
+  font-size: 1.125rem; line-height: 1.6;
+  color: var(--color-text-primary);
+  padding-left: var(--space-6);
+  font-style: italic;
+}
+
+/* ===== 场景标签 ===== */
+.scene-tabs {
+  display: flex; gap: var(--space-2);
+  padding: 0 var(--space-4);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+.scene-tabs::-webkit-scrollbar { display: none; }
+.scene-tab {
+  flex-shrink: 0;
+  padding: var(--space-2) var(--space-4);
+  border-radius: var(--radius-full);
+  font-size: 0.875rem;
+  color: var(--color-text-secondary);
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-border);
+  cursor: pointer; transition: all var(--duration-fast);
+  user-select: none;
+}
+.scene-tab.active {
+  background: var(--color-brand);
+  color: var(--color-text-inverse);
+  border-color: var(--color-brand);
+}
+.scene-tab:active { transform: scale(0.95); }
+
+/* ===== 拍照按钮 ===== */
+.shutter-btn {
+  width: 80px; height: 80px;
+  border-radius: 50%;
+  background: var(--color-brand);
+  display: flex; align-items: center; justify-content: center;
+  box-shadow: var(--shadow-lg);
+  cursor: pointer; position: relative;
+  transition: transform var(--duration-fast);
+  user-select: none;
+}
+.shutter-btn::before {
+  content: '';
+  position: absolute;
+  inset: -8px;
+  border-radius: 50%;
+  border: 2px dashed var(--color-brand-light);
+  animation: rotate 12s linear infinite;
+}
+.shutter-btn:active { transform: scale(0.92); }
+.shutter-btn .icon { font-size: 1.75rem; color: white; }
+
+@keyframes rotate {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* ===== 浮动元素 ===== */
+.float-item {
+  position: absolute;
+  font-size: 2rem;
+  animation: float 3s ease-in-out infinite;
+}
+@keyframes float {
+  0%, 100% { transform: translateY(0) rotate(-5deg); }
+  50% { transform: translateY(-12px) rotate(5deg); }
+}
+
+/* ===== 脉冲光环 ===== */
+.pulse-ring {
+  position: absolute;
+  border-radius: 50%;
+  background: var(--color-brand);
+  opacity: 0.3;
+  animation: pulse 2s ease-out infinite;
+}
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 0.4; }
+  100% { transform: scale(1.5); opacity: 0; }
+}
+
+/* ===== 海报模板 ===== */
+.poster-template {
+  width: 280px; height: 420px;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  position: relative;
+  margin: 0 auto;
+  box-shadow: var(--shadow-xl);
+}
+
+/* ===== 辅助工具类 ===== */
+.text-center { text-align: center; }
+.flex { display: flex; }
+.flex-col { flex-direction: column; }
+.items-center { align-items: center; }
+.justify-center { justify-content: center; }
+.justify-between { justify-content: space-between; }
+.gap-1 { gap: var(--space-1); }
+.gap-2 { gap: var(--space-2); }
+.gap-3 { gap: var(--space-3); }
+.gap-4 { gap: var(--space-4); }
+.gap-6 { gap: var(--space-6); }
+.p-4 { padding: var(--space-4); }
+.p-5 { padding: var(--space-5); }
+.p-6 { padding: var(--space-6); }
+.px-4 { padding-left: var(--space-4); padding-right: var(--space-4); }
+.py-2 { padding-top: var(--space-2); padding-bottom: var(--space-2); }
+.py-4 { padding-top: var(--space-4); padding-bottom: var(--space-4); }
+.mt-2 { margin-top: var(--space-2); }
+.mt-4 { margin-top: var(--space-4); }
+.mt-6 { margin-top: var(--space-6); }
+.mt-8 { margin-top: var(--space-8); }
+.mb-2 { margin-bottom: var(--space-2); }
+.mb-4 { margin-bottom: var(--space-4); }
+.mb-6 { margin-bottom: var(--space-6); }
+.w-full { width: 100%; }
+.flex-1 { flex: 1; }
+.overflow-auto { overflow: auto; }
+.scrollbar-hide::-webkit-scrollbar { display: none; }
+.scrollbar-hide { scrollbar-width: none; }
+.grid { display: grid; }
+.grid-cols-2 { grid-template-columns: repeat(2, 1fr); }
+.gap-3 { gap: var(--space-3); }
+.rounded-lg { border-radius: var(--radius-lg); }
+.rounded-xl { border-radius: var(--radius-xl); }
+.bg-white { background: var(--color-surface-raised); }
+.text-primary { color: var(--color-text-primary); }
+.text-secondary { color: var(--color-text-secondary); }
+.text-tertiary { color: var(--color-text-tertiary); }
+.text-brand { color: var(--color-brand); }
+.text-sm { font-size: 0.875rem; }
+.text-xs { font-size: 0.75rem; }
+.text-lg { font-size: 1.125rem; }
+.text-xl { font-size: 1.25rem; }
+.font-bold { font-weight: 700; }
+.font-medium { font-weight: 500; }
+.leading-tight { line-height: 1.2; }
+.leading-relaxed { line-height: 1.75; }
+.border-b { border-bottom: 1px solid var(--color-border-subtle); }
+.sticky { position: sticky; top: 0; }
+.z-10 { z-index: 10; }
+
+/* ===== 元素识别卡片 ===== */
+.detect-item {
+  display: flex; align-items: center; gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background: var(--color-surface-raised);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border-subtle);
+}
+.detect-item .emoji { font-size: 1.5rem; }
+.detect-item .info { flex: 1; }
+.detect-item .name { font-size: 0.875rem; color: var(--color-text-primary); font-weight: 500; }
+.detect-item .confidence { font-size: 0.75rem; color: var(--color-text-tertiary); }
+.detect-item .badge {
+  padding: 2px 8px;
+  border-radius: var(--radius-full);
+  font-size: 0.625rem;
+  font-weight: 600;
+  background: var(--color-brand-muted);
+  color: var(--color-brand-dark);
+}
+
+/* ===== 方案卡片 ===== */
+.solution-card {
+  background: var(--color-surface-raised);
+  border-radius: var(--radius-xl);
+  padding: var(--space-5);
+  border: 1px solid var(--color-border-subtle);
+  transition: all var(--duration-fast);
+}
+.solution-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-lg); }
+.solution-card .urgency {
+  display: inline-flex; align-items: center; gap: var(--space-1);
+  font-size: 0.75rem; font-weight: 600;
+  margin-bottom: var(--space-2);
+}
+.solution-card .title { font-size: 1.125rem; font-weight: 600; color: var(--color-text-primary); margin-bottom: var(--space-2); }
+.solution-card .desc { font-size: 0.875rem; color: var(--color-text-secondary); line-height: 1.6; }
+.solution-card .steps { margin-top: var(--space-3); }
+.solution-card .step {
+  display: flex; gap: var(--space-2);
+  font-size: 0.875rem; color: var(--color-text-secondary);
+  margin-bottom: var(--space-1);
+}
+.solution-card .step-num {
+  width: 20px; height: 20px;
+  display: flex; align-items: center; justify-content: center;
+  background: var(--color-brand-muted);
+  color: var(--color-brand);
+  border-radius: var(--radius-full);
+  font-size: 0.625rem; font-weight: 700;
+  flex-shrink: 0;
+}
+
+/* ===== 社区卡片 ===== */
+.feed-card {
+  background: var(--color-surface-raised);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  border: 1px solid var(--color-border-subtle);
+}
+.feed-card .header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: var(--space-3) var(--space-4);
+}
+.feed-card .user {
+  display: flex; align-items: center; gap: var(--space-3);
+}
+.feed-card .avatar {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--color-brand-muted);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.25rem;
+}
+.feed-card .username { font-size: 0.875rem; font-weight: 600; color: var(--color-text-primary); }
+.feed-card .meta { font-size: 0.75rem; color: var(--color-text-tertiary); }
+.feed-card .content { padding: 0 var(--space-4) var(--space-3); }
+.feed-card .photo {
+  width: 100%; height: 200px;
+  background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-brand-muted) 100%);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 4rem;
+}
+.feed-card .result-bar {
+  margin: var(--space-3) var(--space-4);
+  padding: var(--space-3);
+  border-radius: var(--radius-md);
+  background: var(--color-strong-bg);
+  display: flex; align-items: center; gap: var(--space-3);
+}
+.feed-card .actions {
+  display: flex; align-items: center; gap: var(--space-6);
+  padding: var(--space-3) var(--space-4);
+  border-top: 1px solid var(--color-border-subtle);
+}
+.feed-card .action {
+  display: flex; align-items: center; gap: var(--space-1);
+  font-size: 0.875rem;
+  color: var(--color-text-tertiary);
+  cursor: pointer; user-select: none;
+}
+.feed-card .action:hover { color: var(--color-brand); }
+
+/* ===== 海报样式 ===== */
+.poster-retro {
+  background: oklch(95% 0.03 80);
+  border: 3px double oklch(50% 0.05 45);
+  padding: var(--space-5);
+  display: flex; flex-direction: column;
+  align-items: center; text-align: center;
+}
+.poster-retro .stamp {
+  width: 60px; height: 60px;
+  border: 3px solid var(--color-extreme);
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--color-extreme);
+  font-size: 0.625rem; font-weight: 700;
+  transform: rotate(-15deg);
+  margin-top: var(--space-4);
+}
+.poster-diagnosis {
+  background: var(--color-white);
+  border: 2px solid var(--color-border);
+  padding: var(--space-5);
+}
+.poster-diagnosis .header-line {
+  border-bottom: 2px solid var(--color-text-primary);
+  padding-bottom: var(--space-2);
+  margin-bottom: var(--space-4);
+}
+.poster-magazine {
+  background: linear-gradient(160deg, oklch(75% 0.15 320) 0%, oklch(70% 0.18 45) 100%);
+  padding: var(--space-5);
+  color: white;
+}
+.poster-minimal {
+  background: var(--color-white);
+  padding: var(--space-6);
+  display: flex; flex-direction: column;
+  justify-content: center; align-items: center;
+}
+
+/* ===== 方案选择器 ===== */
+.template-selector {
+  display: flex; gap: var(--space-3);
+  overflow-x: auto;
+  padding: var(--space-2) var(--space-4);
+  scrollbar-width: none;
+}
+.template-selector::-webkit-scrollbar { display: none; }
+.template-thumb {
+  width: 60px; height: 80px;
+  border-radius: var(--radius-md);
+  flex-shrink: 0;
+  cursor: pointer;
+  border: 2px solid transparent;
+  transition: all var(--duration-fast);
+  overflow: hidden;
+}
+.template-thumb.active { border-color: var(--color-brand); }
+.template-thumb:active { transform: scale(0.95); }
+
+/* ===== 历史记录卡片 ===== */
+.history-card {
+  width: 140px; flex-shrink: 0;
+  background: var(--color-surface-raised);
+  border-radius: var(--radius-lg);
+  padding: var(--space-3);
+  border: 1px solid var(--color-border-subtle);
+  cursor: pointer;
+  transition: transform var(--duration-fast);
+}
+.history-card:hover { transform: translateY(-2px); }
+.history-card:active { transform: scale(0.97); }
+.history-card .preview {
+  width: 100%; height: 80px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-tipsy-bg) 100%);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 2rem;
+  margin-bottom: var(--space-2);
+}
+.history-card .score-row {
+  display: flex; align-items: baseline; gap: 2px;
+}
+.history-card .score-num { font-size: 1.25rem; font-weight: 700; color: var(--color-strong); }
+.history-card .date { font-size: 0.625rem; color: var(--color-text-tertiary); margin-top: 2px; }
+
+/* ===== 功能入口 ===== */
+.feature-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-4);
+  padding: 0 var(--space-4);
+}
+.feature-item {
+  display: flex; flex-direction: column;
+  align-items: center; gap: var(--space-2);
+}
+.feature-item .icon-wrap {
+  width: 48px; height: 48px;
+  border-radius: var(--radius-lg);
+  background: var(--color-brand-muted);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.5rem;
+}
+.feature-item .label { font-size: 0.75rem; color: var(--color-text-secondary); }
+
+/* ===== 识别元素网格 ===== */
+.detect-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-3);
+}
+
+/* ===== 减少动画偏好 ===== */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* ===== 隐藏 class ===== */
+.hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<div class="phone-frame">
+<div class="phone-screen">
+
+<!-- ============ 页面区域 ============ -->
+<div class="pages" id="pages">
+
+<!-- ===== 1. 首页/检测入口 ===== -->
+<div class="page active" id="page-home">
+  <div style="padding: var(--space-6) var(--space-4) var(--space-4);">
+    <!-- 顶部欢迎 -->
+    <div style="text-align: center; margin-bottom: var(--space-8);">
+      <div style="font-size: 2.5rem; margin-bottom: var(--space-2);">🍃</div>
+      <h1 class="font-display" style="font-size: 1.75rem; color: var(--color-text-primary); line-height: 1.3;">
+        去除班味
+      </h1>
+      <p style="font-size: 0.875rem; color: var(--color-text-secondary); margin-top: var(--space-2);">
+        今天，你的班味浓度是多少？
+      </p>
+    </div>
+
+    <!-- 大拍照按钮 -->
+    <div style="display: flex; justify-content: center; margin-bottom: var(--space-8); position: relative;">
+      <div class="pulse-ring" style="width: 120px; height: 120px; top: 50%; left: 50%; margin: -60px 0 0 -60px;"></div>
+      <div class="shutter-btn" onclick="goToPage('page-camera')">
+        <span class="icon">📷</span>
+      </div>
+    </div>
+
+    <!-- 提示文字 -->
+    <p class="text-center text-secondary text-sm" style="margin-bottom: var(--space-8);">
+      拍照检测工位 / 自拍 / 桌面
+    </p>
+
+    <!-- 最近检测 -->
+    <div style="margin-bottom: var(--space-6);">
+      <div style="display: flex; align-items: center; justify-content: space-between; margin-bottom: var(--space-3);">
+        <span class="font-display text-lg" style="color: var(--color-text-primary);">最近检测</span>
+        <span class="text-xs text-tertiary" style="cursor: pointer;" onclick="goToPage('page-community')">查看全部 →</span>
+      </div>
+      <div style="display: flex; gap: var(--space-3); overflow-x: auto; scrollbar-width: none; padding-bottom: var(--space-2);">
+        <div class="history-card" onclick="goToPage('page-report')">
+          <div class="preview">☕</div>
+          <div class="score-row"><span class="score-num">78</span><span class="text-xs">分</span></div>
+          <div class="date">今天 14:30</div>
+        </div>
+        <div class="history-card" onclick="goToPage('page-report')">
+          <div class="preview" style="background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-fresh-bg) 100%);">🌿</div>
+          <div class="score-row"><span class="score-num" style="color: var(--color-fresh);">32</span><span class="text-xs">分</span></div>
+          <div class="date">昨天 09:15</div>
+        </div>
+        <div class="history-card" onclick="goToPage('page-report')">
+          <div class="preview" style="background: linear-gradient(135deg, var(--color-surface) 0%, var(--color-extreme-bg) 100%);">🔥</div>
+          <div class="score-row"><span class="score-num" style="color: var(--color-extreme);">92</span><span class="text-xs">分</span></div>
+          <div class="date">3天前</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 功能入口 -->
+    <div class="feature-grid">
+      <div class="feature-item" onclick="goToPage('page-camera')">
+        <div class="icon-wrap">📸</div>
+        <span class="label">立即检测</span>
+      </div>
+      <div class="feature-item" onclick="goToPage('page-solutions')">
+        <div class="icon-wrap">💊</div>
+        <span class="label">去班味</span>
+      </div>
+      <div class="feature-item" onclick="goToPage('page-community')">
+        <div class="icon-wrap">👥</div>
+        <span class="label">班味圈子</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 2. 拍照/上传页 ===== -->
+<div class="page" id="page-camera">
+  <div class="nav-bar">
+    <div class="nav-btn" onclick="goToPage('page-home')">←</div>
+    <span class="title">检测班味</span>
+    <div class="nav-btn" onclick="goToPage('page-report')">跳过</div>
+  </div>
+
+  <div style="padding-top: var(--space-4);">
+    <!-- 场景选择 -->
+    <div class="scene-tabs" style="margin-bottom: var(--space-4);">
+      <div class="scene-tab active" onclick="selectScene(this)">工位检测</div>
+      <div class="scene-tab" onclick="selectScene(this)">自拍检测</div>
+      <div class="scene-tab" onclick="selectScene(this)">桌面检测</div>
+      <div class="scene-tab" onclick="selectScene(this)">任意照片</div>
+    </div>
+
+    <!-- 拍照区域 -->
+    <div style="padding: 0 var(--space-4);">
+      <div style="width: 100%; height: 380px; background: linear-gradient(135deg, oklch(92% 0.02 45) 0%, oklch(88% 0.03 45) 100%); border-radius: var(--radius-xl); display: flex; flex-direction: column; align-items: center; justify-content: center; position: relative; overflow: hidden; border: 2px dashed var(--color-border);">
+        <!-- 取景框装饰 -->
+        <div style="position: absolute; top: 20px; left: 20px; width: 30px; height: 30px; border-top: 3px solid var(--color-brand); border-left: 3px solid var(--color-brand);"></div>
+        <div style="position: absolute; top: 20px; right: 20px; width: 30px; height: 30px; border-top: 3px solid var(--color-brand); border-right: 3px solid var(--color-brand);"></div>
+        <div style="position: absolute; bottom: 20px; left: 20px; width: 30px; height: 30px; border-bottom: 3px solid var(--color-brand); border-left: 3px solid var(--color-brand);"></div>
+        <div style="position: absolute; bottom: 20px; right: 20px; width: 30px; height: 30px; border-bottom: 3px solid var(--color-brand); border-right: 3px solid var(--color-brand);"></div>
+
+        <div style="font-size: 4rem; margin-bottom: var(--space-4);">🏢</div>
+        <p style="font-size: 0.875rem; color: var(--color-text-secondary); text-align: center; padding: 0 var(--space-6);">
+          对准你的工位，越乱越真实
+        </p>
+      </div>
+    </div>
+
+    <!-- 底部拍照按钮 -->
+    <div style="display: flex; flex-direction: column; align-items: center; margin-top: var(--space-6); gap: var(--space-4);">
+      <div style="display: flex; align-items: center; gap: var(--space-8);">
+        <div class="nav-btn" style="font-size: 1.25rem;">🖼️</div>
+        <div class="shutter-btn" style="width: 72px; height: 72px;" onclick="goToPage('page-loading')">
+          <span class="icon" style="font-size: 1.5rem;">●</span>
+        </div>
+        <div class="nav-btn" style="font-size: 1.25rem;">🔄</div>
+      </div>
+      <p class="text-xs text-tertiary">点击拍照，长按连拍</p>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 3. 分析中页 ===== -->
+<div class="page" id="page-loading">
+  <div style="height: 100%; display: flex; flex-direction: column; align-items: center; justify-content: center; padding: var(--space-6); position: relative; overflow: hidden;">
+    <!-- 动态背景 -->
+    <div style="position: absolute; inset: 0; background: linear-gradient(180deg, var(--color-surface) 0%, var(--color-tipsy-bg) 100%); transition: background 2s;"></div>
+
+    <!-- 浮动元素 -->
+    <div class="float-item" style="top: 15%; left: 15%; animation-delay: 0s;">☕</div>
+    <div class="float-item" style="top: 25%; right: 18%; animation-delay: 0.5s;">📎</div>
+    <div class="float-item" style="bottom: 30%; left: 20%; animation-delay: 1s;">📝</div>
+    <div class="float-item" style="bottom: 25%; right: 15%; animation-delay: 1.5s;">🖊️</div>
+
+    <!-- 中心内容 -->
+    <div style="position: relative; z-index: 2; text-align: center;">
+      <div style="width: 120px; height: 120px; margin: 0 auto var(--space-6); position: relative;">
+        <div style="position: absolute; inset: 0; border-radius: 50%; border: 3px solid var(--color-brand-light); border-top-color: var(--color-brand); animation: rotate 1s linear infinite;"></div>
+        <div style="position: absolute; inset: 8px; border-radius: 50%; border: 2px solid var(--color-brand-muted); border-bottom-color: var(--color-brand); animation: rotate 1.5s linear infinite reverse;"></div>
+        <div style="position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 2.5rem;">🔬</div>
+      </div>
+
+      <h2 class="font-display" id="loading-text" style="font-size: 1.5rem; color: var(--color-text-primary); margin-bottom: var(--space-4);">
+        正在扫描班味分子...
+      </h2>
+
+      <!-- 进度条 -->
+      <div style="width: 200px; margin: 0 auto var(--space-4);">
+        <div class="progress-track">
+          <div class="progress-fill" id="progress-fill" style="width: 0%;"></div>
+        </div>
+      </div>
+      <p class="text-sm text-secondary" id="progress-text">0%</p>
+
+      <!-- 趣味事实 -->
+      <div class="card" style="margin-top: var(--space-8); max-width: 280px;">
+        <p class="text-xs text-tertiary" style="margin-bottom: var(--space-2);">💡 班味冷知识</p>
+        <p class="text-sm text-secondary" id="fun-fact">每多喝一杯咖啡，班味浓度增加 5%</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 4. 检测报告页（核心） ===== -->
+<div class="page" id="page-report">
+  <div style="position: relative;">
+    <!-- 顶部背景 -->
+    <div style="position: absolute; top: 0; left: 0; right: 0; height: 320px; background: linear-gradient(160deg, var(--color-strong) 0%, oklch(55% 0.16 35) 100%); border-radius: 0 0 var(--radius-2xl) var(--radius-2xl);"></div>
+
+    <!-- 导航栏 -->
+    <div style="position: relative; display: flex; align-items: center; justify-content: space-between; padding: var(--space-4); padding-top: calc(var(--space-4) + 20px);">
+      <div class="nav-btn" style="background: oklch(100% 0 0 / 0.2); color: white;" onclick="goToPage('page-home')">←</div>
+      <span class="font-display" style="font-size: 1.125rem; color: white;">检测报告</span>
+      <div class="nav-btn" style="background: oklch(100% 0 0 / 0.2); color: white;" onclick="goToPage('page-share')">↗️</div>
+    </div>
+
+    <!-- 分数区域 -->
+    <div style="position: relative; text-align: center; padding: var(--space-4) var(--space-4) var(--space-6);">
+      <div style="display: inline-block; background: oklch(100% 0 0 / 0.2); backdrop-filter: blur(8px); border-radius: var(--radius-xl); padding: var(--space-4) var(--space-8);">
+        <div class="score-number" id="score-number" style="color: white; font-size: 5rem;">0</div>
+        <div class="score-label" style="color: oklch(95% 0.05 45);">班味浓度</div>
+      </div>
+      <div style="margin-top: var(--space-3);">
+        <span class="tag tag-strong">班味浓郁</span>
+      </div>
+    </div>
+
+    <!-- 内容区域 -->
+    <div style="background: var(--color-surface); border-radius: var(--radius-2xl) var(--radius-2xl) 0 0; position: relative; padding: var(--space-5) var(--space-4);">
+      <!-- 雷达图 -->
+      <div style="margin-bottom: var(--space-6);">
+        <h3 class="font-display text-lg" style="color: var(--color-text-primary); margin-bottom: var(--space-4); text-align: center;">
+          六维班味分析
+        </h3>
+        <div class="radar-container">
+          <canvas id="radar-canvas" width="240" height="240"></canvas>
+        </div>
+      </div>
+
+      <!-- 辣评 -->
+      <div class="quote-card">
+        <p class="quote-text" id="quote-text">这工位，一看就是住公司了</p>
+      </div>
+
+      <!-- 识别元素 -->
+      <div style="margin-top: var(--space-6);">
+        <h3 class="font-display text-lg" style="color: var(--color-text-primary); margin-bottom: var(--space-3);">AI识别到的元素</h3>
+        <div class="detect-grid">
+          <div class="detect-item">
+            <span class="emoji">☕</span>
+            <div class="info">
+              <div class="name">咖啡杯 x3</div>
+              <div class="confidence">置信度 99%</div>
+            </div>
+            <span class="badge">高危</span>
+          </div>
+          <div class="detect-item">
+            <span class="emoji">🥡</span>
+            <div class="info">
+              <div class="name">外卖盒 x2</div>
+              <div class="confidence">置信度 87%</div>
+            </div>
+            <span class="badge">中危</span>
+          </div>
+          <div class="detect-item">
+            <span class="emoji">📎</span>
+            <div class="info">
+              <div class="name">回形针散落</div>
+              <div class="confidence">置信度 92%</div>
+            </div>
+            <span class="badge">低危</span>
+          </div>
+          <div class="detect-item">
+            <span class="emoji">😵</span>
+            <div class="info">
+              <div class="name">眼神空洞</div>
+              <div class="confidence">置信度 95%</div>
+            </div>
+            <span class="badge">高危</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CTA按钮 -->
+      <div style="margin-top: var(--space-8); display: flex; flex-direction: column; gap: var(--space-3);">
+        <button class="btn btn-primary btn-lg" onclick="goToPage('page-solutions')">
+          💊 查看去班味方案
+        </button>
+        <button class="btn btn-secondary" onclick="goToPage('page-share')">
+          📤 生成分享海报
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== 5. 去班味方案页 ===== -->
+<div class="page" id="page-solutions">
+  <div class="nav-bar">
+    <div class="nav-btn" onclick="goToPage('page-report')">←</div>
+    <span class="title">去班味方案</span>
+    <div style="width: 36px;"></div>
+  </div>
+
+  <div style="padding: var(--space-4);">
+    <!-- 总览 -->
+    <div class="card" style="margin-bottom: var(--space-5); text-align: center;">
+      <div class="font-display" style="font-size: 1.25rem; color: var(--color-text-primary); margin-bottom: var(--space-2);">
+        为你推荐 5 个方案
+      </div>
+      <p class="text-sm text-secondary">针对你的 78分 班味浓度定制</p>
+    </div>
+
+    <!-- 方案列表 -->
+    <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+      <div class="solution-card" style="background: linear-gradient(135deg, var(--color-surface-raised) 0%, var(--color-fresh-bg) 100%);">
+        <div class="urgency" style="color: var(--color-extreme);">🔥 紧急</div>
+        <div class="title">工位断舍离</div>
+        <div class="desc">清理桌面，只留必需品。研究表明，整洁的工位能降低30%的焦虑感。</div>
+        <div class="steps">
+          <div class="step"><span class="step-num">1</span>扔掉过期文件和空咖啡杯</div>
+          <div class="step"><span class="step-num">2</span>只保留今天需要的物品</div>
+          <div class="step"><span class="step-num">3</span>给抽屉里的杂物分类</div>
+        </div>
+        <div style="display: flex; gap: var(--space-3); margin-top: var(--space-4);">
+          <button class="btn btn-primary" style="flex: 1; padding: var(--space-2) var(--space-4);">☑️ 完成打卡</button>
+          <button class="btn btn-ghost" style="padding: var(--space-2);">❤️</button>
+        </div>
+      </div>
+
+      <div class="solution-card" style="background: linear-gradient(135deg, var(--color-surface-raised) 0%, var(--color-tipsy-bg) 100%);">
+        <div class="urgency" style="color: var(--color-strong);">⚡ 重要</div>
+        <div class="title">15分钟工间操</div>
+        <div class="desc">缓解肩膀僵硬，预防颈椎病。在工位就能完成的简单运动。</div>
+        <div class="steps">
+          <div class="step"><span class="step-num">1</span>肩颈转动，顺时针5圈</div>
+          <div class="step"><span class="step-num">2</span>手臂上举拉伸，保持10秒</div>
+          <div class="step"><span class="step-num">3</span>腰部扭转，左右各5次</div>
+        </div>
+        <div style="display: flex; gap: var(--space-3); margin-top: var(--space-4);">
+          <button class="btn btn-primary" style="flex: 1; padding: var(--space-2) var(--space-4);">☑️ 完成打卡</button>
+          <button class="btn btn-ghost" style="padding: var(--space-2);">❤️</button>
+        </div>
+      </div>
+
+      <div class="solution-card">
+        <div class="urgency" style="color: var(--color-tipsy);">📌 建议</div>
+        <div class="title">咖啡戒断计划</div>
+        <div class="desc">逐步减少咖啡因摄入，用茶或水替代下午的那杯咖啡。</div>
+        <div class="steps">
+          <div class="step"><span class="step-num">1</span>下午3点后不喝咖啡</div>
+          <div class="step"><span class="step-num">2</span>准备替代饮品（花茶/柠檬水）</div>
+          <div class="step"><span class="step-num">3</span>坚持一周，感受变化</div>
+        </div>
+        <div style="display: flex; gap: var(--space-3); margin-top: var(--space-4);">
+          <button class="btn btn-primary" style="flex: 1; padding: var(--space-2) var(--space-4);">☑️ 完成打卡</button>
+          <button class="btn btn-ghost" style="padding: var(--space-2);">❤️</button>
+        </div>
+      </div>
+
+      <div class="solution-card">
+        <div class="urgency" style="color: var(--color-fresh);">🌱 日常</div>
+        <div class="title">窗边远眺疗法</div>
+        <div class="desc">每2小时看远处5分钟，缓解眼疲劳，顺便让大脑放空。</div>
+        <div class="steps">
+          <div class="step"><span class="step-num">1</span>设一个2小时闹钟</div>
+          <div class="step"><span class="step-num">2</span>站起来，走到窗边</div>
+          <div class="step"><span class="step-num">3</span>看最远处，眨眼20次</div>
+        </div>
+        <div style="display: flex; gap: var(--space-3); margin-top: var(--space-4);">
+          <button class="btn btn-primary" style="flex: 1; padding: var(--space-2) var(--space-4);">☑️ 完成打卡</button>
+          <button class="btn btn-ghost" style="padding: var(--space-2);">❤️</button>
+        </div>
+      </div>
+
+      <div class="solution-card" style="background: linear-gradient(135deg, var(--color-surface-raised) 0%, oklch(96% 0.04 300) 100%);">
+        <div class="urgency" style="color: var(--color-brand);">🎯 挑战</div>
+        <div class="title">准点下班挑战</div>
+        <div class="desc">今天不加班！到点就关机，看看天会不会塌下来。</div>
+        <div class="steps">
+          <div class="step"><span class="step-num">1</span>下班前1小时开始收尾</div>
+          <div class="step"><span class="step-num">2</span>到点准时关闭电脑</div>
+          <div class="step"><span class="step-num">3</span>走出公司，深呼吸</div>
+        </div>
+        <div style="display: flex; gap: var(--space-3); margin-top: var(--space-4);">
+          <button class="btn btn-primary" style="flex: 1; padding: var(--space-2) var(--space-4);">☑️ 完成打卡</button>
+          <button class="btn btn-ghost" style="padding: var(--space-2);">❤️</button>
+        </div>
+      </div>
+    </div>
+
+    <div style="height: var(--space-6);"></div>
+  </div>
+</div>
+
+<!-- ===== 6. 圈子/社区页 ===== -->
+<div class="page" id="page-community">
+  <div class="nav-bar">
+    <div style="width: 36px;"></div>
+    <span class="title">班味圈子</span>
+    <div class="nav-btn">✏️</div>
+  </div>
+
+  <div style="padding: var(--space-4);">
+    <!-- 社区Tab -->
+    <div style="display: flex; gap: var(--space-4); margin-bottom: var(--space-4); border-bottom: 1px solid var(--color-border-subtle); padding-bottom: var(--space-2);">
+      <span style="font-size: 0.875rem; font-weight: 600; color: var(--color-brand); border-bottom: 2px solid var(--color-brand); padding-bottom: var(--space-2);">推荐</span>
+      <span style="font-size: 0.875rem; color: var(--color-text-secondary); padding-bottom: var(--space-2);">附近</span>
+      <span style="font-size: 0.875rem; color: var(--color-text-secondary); padding-bottom: var(--space-2);">我的</span>
+    </div>
+
+    <!-- 信息流 -->
+    <div style="display: flex; flex-direction: column; gap: var(--space-4);">
+      <!-- Feed Item 1 -->
+      <div class="feed-card">
+        <div class="header">
+          <div class="user">
+            <div class="avatar">👩‍💻</div>
+            <div>
+              <div class="username">互联网搬砖工</div>
+              <div class="meta">某厂 · 2小时前</div>
+            </div>
+          </div>
+          <span class="tag tag-strong">78分</span>
+        </div>
+        <div class="photo" style="background: linear-gradient(135deg, oklch(92% 0.03 45) 0%, oklch(88% 0.04 35) 100%);">☕📎🥡</div>
+        <div class="content">
+          <div class="result-bar">
+            <span style="font-size: 1.25rem;">😵</span>
+            <div style="flex: 1;">
+              <div style="font-size: 0.875rem; font-weight: 600; color: var(--color-strong);">班味浓郁</div>
+              <div class="text-xs text-tertiary">"这工位，一看就是住公司了"</div>
+            </div>
+          </div>
+        </div>
+        <div class="actions">
+          <div class="action">❤️ 128</div>
+          <div class="action">💬 23</div>
+          <div class="action">↗️ 分享</div>
+        </div>
+      </div>
+
+      <!-- Feed Item 2 -->
+      <div class="feed-card">
+        <div class="header">
+          <div class="user">
+            <div class="avatar" style="background: var(--color-fresh-bg);">🌿</div>
+            <div>
+              <div class="username">摸鱼小能手</div>
+              <div class="meta">国企 · 4小时前</div>
+            </div>
+          </div>
+          <span class="tag tag-fresh">32分</span>
+        </div>
+        <div class="photo" style="background: linear-gradient(135deg, oklch(95% 0.03 160) 0%, oklch(90% 0.05 160) 100%);">🌱✨</div>
+        <div class="content">
+          <div class="result-bar" style="background: var(--color-fresh-bg);">
+            <span style="font-size: 1.25rem;">😊</span>
+            <div style="flex: 1;">
+              <div style="font-size: 0.875rem; font-weight: 600; color: var(--color-fresh);">清新脱俗</div>
+              <div class="text-xs text-tertiary">"你是职场小白莲，继续保持！"</div>
+            </div>
+          </div>
+        </div>
+        <div class="actions">
+          <div class="action">❤️ 256</div>
+          <div class="action">💬 45</div>
+          <div class="action">↗️ 分享</div>
+        </div>
+      </div>
+
+      <!-- Feed Item 3 -->
+      <div class="feed-card">
+        <div class="header">
+          <div class="user">
+            <div class="avatar" style="background: var(--color-extreme-bg);">🔥</div>
+            <div>
+              <div class="username">996战神</div>
+              <div class="meta">某电商 · 昨天</div>
+            </div>
+          </div>
+          <span class="tag tag-extreme">92分</span>
+        </div>
+        <div class="photo" style="background: linear-gradient(135deg, oklch(90% 0.04 25) 0%, oklch(85% 0.06 25) 100%);">☕☕☕</div>
+        <div class="content">
+          <div class="result-bar" style="background: var(--color-extreme-bg);">
+            <span style="font-size: 1.25rem;">💀</span>
+            <div style="flex: 1;">
+              <div style="font-size: 0.875rem; font-weight: 600; color: var(--color-extreme);">腌入味了</div>
+              <div class="text-xs text-tertiary">"恭喜你，已经是班味的形状了"</div>
+            </div>
+          </div>
+        </div>
+        <div class="actions">
+          <div class="action">❤️ 512</div>
+          <div class="action">💬 89</div>
+          <div class="action">↗️ 分享</div>
+        </div>
+      </div>
+    </div>
+
+    <div style="height: var(--space-6);"></div>
+  </div>
+</div>
+
+<!-- ===== 7. 分享海报页 ===== -->
+<div class="page" id="page-share">
+  <div class="nav-bar">
+    <div class="nav-btn" onclick="goToPage('page-report')">←</div>
+    <span class="title">生成海报</span>
+    <div style="width: 36px;"></div>
+  </div>
+
+  <div style="padding: var(--space-4);">
+    <!-- 海报预览 -->
+    <div style="margin-bottom: var(--space-6);">
+      <div class="poster-template poster-retro" id="poster-preview">
+        <div class="font-display" style="font-size: 1.25rem; color: var(--color-text-primary); margin-bottom: var(--space-4);">
+          班味检测报告
+        </div>
+        <div style="font-size: 0.75rem; color: var(--color-text-tertiary); margin-bottom: var(--space-4);">
+          检测日期: 2026.04.30
+        </div>
+        <div class="score-number" style="font-size: 5rem; color: var(--color-strong); margin: var(--space-2) 0;">78</div>
+        <div class="score-label" style="color: var(--color-strong); margin-bottom: var(--space-4);">班味浓郁</div>
+        <div style="font-size: 0.875rem; color: var(--color-text-secondary); line-height: 1.6; padding: 0 var(--space-2);">
+          "这工位，一看就是住公司了"
+        </div>
+        <div class="stamp">已确诊</div>
+        <div style="position: absolute; bottom: var(--space-4); left: 0; right: 0; text-align: center;">
+          <div style="font-size: 0.625rem; color: var(--color-text-tertiary);">扫码检测你的班味 →</div>
+          <div style="width: 48px; height: 48px; background: var(--color-border); margin: var(--space-2) auto 0; border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 0.625rem;">
+            二维码
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 模板选择 -->
+    <div style="margin-bottom: var(--space-6);">
+      <p class="text-sm text-secondary" style="margin-bottom: var(--space-3); padding: 0 var(--space-2);">选择模板</p>
+      <div class="template-selector">
+        <div class="template-thumb active" onclick="selectTemplate(this, 'retro')" style="background: oklch(95% 0.03 80); border: 2px solid var(--color-brand);"></div>
+        <div class="template-thumb" onclick="selectTemplate(this, 'diagnosis')" style="background: var(--color-white); border: 1px solid var(--color-border);"></div>
+        <div class="template-thumb" onclick="selectTemplate(this, 'magazine')" style="background: linear-gradient(160deg, oklch(75% 0.15 320) 0%, oklch(70% 0.18 45) 100%);"></div>
+        <div class="template-thumb" onclick="selectTemplate(this, 'minimal')" style="background: var(--color-white);"></div>
+      </div>
+      <div style="display: flex; justify-content: space-around; margin-top: var(--space-2); padding: 0 var(--space-4);">
+        <span class="text-xs text-secondary">复古档案</span>
+        <span class="text-xs text-secondary">诊断书</span>
+        <span class="text-xs text-secondary">潮流杂志</span>
+        <span class="text-xs text-secondary">极简艺术</span>
+      </div>
+    </div>
+
+    <!-- 操作按钮 -->
+    <div style="display: flex; flex-direction: column; gap: var(--space-3);">
+      <button class="btn btn-primary btn-lg" onclick="showToast('海报已保存到相册！')">
+        💾 保存到相册
+      </button>
+      <button class="btn btn-secondary" onclick="showToast('已复制分享链接！')">
+        🔗 复制链接
+      </button>
+    </div>
+  </div>
+</div>
+
+</div><!-- /pages -->
+
+<!-- ============ 底部Tab栏 ============ -->
+<div class="tab-bar" id="tab-bar">
+  <div class="tab-item active" onclick="switchTab(0, 'page-home')">
+    <span class="tab-icon">🏠</span>
+    <span>首页</span>
+  </div>
+  <div class="tab-item" onclick="switchTab(1, 'page-camera')">
+    <span class="tab-icon">📷</span>
+    <span>检测</span>
+  </div>
+  <div class="tab-item" onclick="switchTab(2, 'page-solutions')">
+    <span class="tab-icon">💊</span>
+    <span>方案</span>
+  </div>
+  <div class="tab-item" onclick="switchTab(3, 'page-community')">
+    <span class="tab-icon">👥</span>
+    <span>圈子</span>
+  </div>
+</div>
+
+</div><!-- /phone-screen -->
+</div><!-- /phone-frame -->
+
+<!-- Toast -->
+<div id="toast" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%) scale(0); background: oklch(30% 0.02 45 / 0.9); color: white; padding: var(--space-3) var(--space-6); border-radius: var(--radius-lg); font-size: 0.875rem; z-index: 1000; transition: transform 0.3s var(--ease-out-expo); pointer-events: none; white-space: nowrap;"></div>
+
+<script>
+// ===== 页面切换 =====
+function goToPage(pageId) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById(pageId).classList.add('active');
+  document.getElementById('pages').scrollTop = 0;
+
+  // 特殊页面处理
+  if (pageId === 'page-loading') {
+    startLoadingAnimation();
+  } else if (pageId === 'page-report') {
+    setTimeout(() => { animateScore(); drawRadar(); }, 300);
+  }
+
+  // Tab栏显示逻辑
+  const tabBar = document.getElementById('tab-bar');
+  const noTabPages = ['page-camera', 'page-loading', 'page-share'];
+  if (noTabPages.includes(pageId)) {
+    tabBar.style.display = 'none';
+  } else {
+    tabBar.style.display = 'flex';
+  }
+}
+
+function switchTab(index, pageId) {
+  document.querySelectorAll('.tab-item').forEach((t, i) => {
+    t.classList.toggle('active', i === index);
+  });
+  goToPage(pageId);
+}
+
+// ===== 场景选择 =====
+function selectScene(el) {
+  document.querySelectorAll('.scene-tab').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// ===== 海报模板选择 =====
+function selectTemplate(el, template) {
+  document.querySelectorAll('.template-thumb').forEach(t => t.classList.remove('active'));
+  el.classList.add('active');
+
+  const poster = document.getElementById('poster-preview');
+  poster.className = 'poster-template';
+  if (template === 'retro') poster.classList.add('poster-retro');
+  else if (template === 'diagnosis') poster.classList.add('poster-diagnosis');
+  else if (template === 'magazine') poster.classList.add('poster-magazine');
+  else if (template === 'minimal') poster.classList.add('poster-minimal');
+}
+
+// ===== Toast =====
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.style.transform = 'translate(-50%, -50%) scale(1)';
+  setTimeout(() => {
+    toast.style.transform = 'translate(-50%, -50%) scale(0)';
+  }, 2000);
+}
+
+// ===== 加载动画 =====
+const loadingTexts = [
+  '正在扫描班味分子...',
+  '检测咖啡依赖指数...',
+  '分析工位混乱程度...',
+  '计算外卖盒堆积高度...',
+  '读取眼神空洞指数...',
+  '统计未读消息数量...',
+  '测量肩膀僵硬程度...'
+];
+const funFacts = [
+  '每多喝一杯咖啡，班味浓度增加 5%',
+  '工位越乱，创造力越高（可能吧）',
+  '回形针是最常见的工位遗落物',
+  '眼神空洞是班味的前兆症状',
+  '准点下班可降低班味浓度 20%'
+];
+
+function startLoadingAnimation() {
+  let progress = 0;
+  const fill = document.getElementById('progress-fill');
+  const text = document.getElementById('progress-text');
+  const loadingText = document.getElementById('loading-text');
+  const factText = document.getElementById('fun-fact');
+
+  fill.style.width = '0%';
+
+  const interval = setInterval(() => {
+    progress += Math.random() * 15 + 5;
+    if (progress > 100) progress = 100;
+    fill.style.width = progress + '%';
+    text.textContent = Math.floor(progress) + '%';
+
+    if (progress % 20 < 10) {
+      loadingText.textContent = loadingTexts[Math.floor(progress / 15) % loadingTexts.length];
+    }
+
+    if (progress >= 100) {
+      clearInterval(interval);
+      setTimeout(() => goToPage('page-report'), 500);
+    }
+  }, 400);
+
+  // 切换趣味事实
+  let factIndex = 0;
+  const factInterval = setInterval(() => {
+    factIndex = (factIndex + 1) % funFacts.length;
+    if (factText) factText.textContent = funFacts[factIndex];
+  }, 2500);
+
+  // 清理
+  setTimeout(() => clearInterval(factInterval), 5000);
+}
+
+// ===== 分数计数动画 =====
+function animateScore() {
+  const el = document.getElementById('score-number');
+  let current = 0;
+  const target = 78;
+  const duration = 1500;
+  const start = performance.now();
+
+  function update(now) {
+    const elapsed = now - start;
+    const progress = Math.min(elapsed / duration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    current = Math.floor(eased * target);
+    el.textContent = current;
+    if (progress < 1) requestAnimationFrame(update);
+  }
+  requestAnimationFrame(update);
+}
+
+// ===== 雷达图绘制 =====
+function drawRadar() {
+  const canvas = document.getElementById('radar-canvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  const size = 240;
+  const center = size / 2;
+  const radius = 80;
+  const dimensions = ['眼神空洞', '工位混乱', '咖啡依赖', '外卖堆积', '肩膀僵硬', '消息未读'];
+  const values = [0.85, 0.75, 0.9, 0.6, 0.7, 0.55];
+  const color = 'oklch(65% 0.18 45)';
+
+  ctx.clearRect(0, 0, size, size);
+
+  // 绘制网格
+  for (let i = 1; i <= 4; i++) {
+    ctx.beginPath();
+    ctx.strokeStyle = 'oklch(88% 0.015 45)';
+    ctx.lineWidth = 1;
+    for (let j = 0; j < 6; j++) {
+      const angle = (Math.PI * 2 / 6) * j - Math.PI / 2;
+      const r = (radius / 4) * i;
+      const x = center + Math.cos(angle) * r;
+      const y = center + Math.sin(angle) * r;
+      if (j === 0) ctx.moveTo(x, y);
+      else ctx.lineTo(x, y);
+    }
+    ctx.closePath();
+    ctx.stroke();
+  }
+
+  // 绘制轴线
+  for (let i = 0; i < 6; i++) {
+    const angle = (Math.PI * 2 / 6) * i - Math.PI / 2;
+    ctx.beginPath();
+    ctx.strokeStyle = 'oklch(88% 0.015 45)';
+    ctx.moveTo(center, center);
+    ctx.lineTo(center + Math.cos(angle) * radius, center + Math.sin(angle) * radius);
+    ctx.stroke();
+  }
+
+  // 绘制数据区域
+  ctx.beginPath();
+  for (let i = 0; i < 6; i++) {
+    const angle = (Math.PI * 2 / 6) * i - Math.PI / 2;
+    const r = radius * values[i];
+    const x = center + Math.cos(angle) * r;
+    const y = center + Math.sin(angle) * r;
+    if (i === 0) ctx.moveTo(x, y);
+    else ctx.lineTo(x, y);
+  }
+  ctx.closePath();
+  ctx.fillStyle = 'oklch(65% 0.18 45 / 0.25)';
+  ctx.fill();
+  ctx.strokeStyle = 'oklch(65% 0.18 45)';
+  ctx.lineWidth = 2;
+  ctx.stroke();
+
+  // 绘制数据点
+  for (let i = 0; i < 6; i++) {
+    const angle = (Math.PI * 2 / 6) * i - Math.PI / 2;
+    const r = radius * values[i];
+    const x = center + Math.cos(angle) * r;
+    const y = center + Math.sin(angle) * r;
+    ctx.beginPath();
+    ctx.arc(x, y, 4, 0, Math.PI * 2);
+    ctx.fillStyle = 'white';
+    ctx.fill();
+    ctx.strokeStyle = 'oklch(65% 0.18 45)';
+    ctx.lineWidth = 2;
+    ctx.stroke();
+  }
+
+  // 绘制标签
+  ctx.font = '12px "LXGW WenKai", sans-serif';
+  ctx.fillStyle = 'oklch(45% 0.03 45)';
+  ctx.textAlign = 'center';
+  for (let i = 0; i < 6; i++) {
+    const angle = (Math.PI * 2 / 6) * i - Math.PI / 2;
+    const labelR = radius + 18;
+    const x = center + Math.cos(angle) * labelR;
+    const y = center + Math.sin(angle) * labelR;
+    ctx.fillText(dimensions[i], x, y + 4);
+  }
+}
+
+// ===== 初始化 =====
+document.addEventListener('DOMContentLoaded', () => {
+  // 默认隐藏tab bar在首页（因为首页不需要）
+  // 实际上首页应该有tab bar，但当前设计是检测入口
+});
+</script>
+
+</body>
+</html>
